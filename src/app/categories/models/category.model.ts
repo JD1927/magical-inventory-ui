@@ -1,6 +1,6 @@
 export interface ICategory {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   isMain: boolean;
 }

@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import type { IProduct } from './products/models/product.model';
-import { ProductService } from './products/services/product/product';
+import { ProductService } from './products/services/product/product.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
