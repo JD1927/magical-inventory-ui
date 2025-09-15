@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+/* Import fonts */
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap');
+/* Tailwind */
+@import "tailwindcss";
+/* Prime Icons */
+@import 'primeicons/primeicons.css';
+/* PrimeNG Plugin */
+@import "tailwindcss-primeui";
+/* Normalize */
+@import "./assets/styles/normalize.css";
+/* PrimeNG Theme Fonts - Apply globally */
+:root {
+  --font-family: 'Exo', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+}
