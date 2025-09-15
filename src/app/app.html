@@ -2,6 +2,15 @@
   {{ title() }}
 </h1>
 
+<ul>
+  @for (product of products(); track product.id) {
+  <li>{{ product.name }}</li>
+  } @empty {
+  <p>Loading products...</p>
+  }
+</ul>
+
 <p-button label="Check" icon="pi pi-check" />
+
 
 <router-outlet />
