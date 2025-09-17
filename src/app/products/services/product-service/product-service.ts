@@ -5,7 +5,7 @@ import { environment } from '../../../../environments/environment';
 import type { IProduct, ICreateProductDto, IUpdateProductDto } from '../../models/product.model';
 
 const PAGE_LIMIT = 10;
-const INITIAL_OFFSET = 10;
+const INITIAL_OFFSET = 0;
 const API_PRODUCTS = `${environment.apiUrl}/products`;
 
 @Injectable({
