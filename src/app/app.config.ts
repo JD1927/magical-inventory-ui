@@ -1,20 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
 import type { ApplicationConfig } from '@angular/core';
 import { provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
-import { routes } from './app.routes';
-import CustomPreset from './preset.prime';
-import { provideHttpClient } from '@angular/common/http';
+import { APP_ROUTES } from './app.routes';
+import { Noir } from './preset.prime';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes),
+    provideRouter(APP_ROUTES),
     provideHttpClient(),
     providePrimeNG({
       theme: {
-        preset: CustomPreset,
+        preset: Noir,
         options: {
           darkModeSelector: '.magical-inventory-ui-dark',
           zIndex: {},
