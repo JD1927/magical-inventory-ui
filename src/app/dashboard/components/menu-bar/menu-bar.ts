@@ -5,13 +5,13 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenubarModule } from 'primeng/menubar';
 
 @Component({
-  selector: 'app-top-bar',
+  selector: 'app-menu-bar',
   imports: [CommonModule, MenubarModule, AvatarModule],
   template: `
     <div class="card">
       <p-menubar [model]="menuItems()">
         <ng-template #start>
-          <h3 class="ml-8 text-xl font-bold">Magical Inventory</h3>
+          <h3 class="ml-8 text-xl font-bold pt-4 pb-4">Magical Inventory</h3>
         </ng-template>
         <ng-template #end>
           <p-avatar label="M" class="mr-2" shape="circle" />
@@ -20,7 +20,7 @@ import { MenubarModule } from 'primeng/menubar';
     </div>
   `,
 })
-export class TopBar {
+export class MenuBar {
   menuItems = signal<MenuItem[]>(TOP_BAR_MENU_ITEMS);
 }
 

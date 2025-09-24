@@ -2,18 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { RippleModule } from 'primeng/ripple';
-import { BreadcrumbComponent, TopBar } from '../../common/components';
+import { BreadcrumbComponent, MenuBar } from '../components';
 
 @Component({
   selector: 'app-dashboard-layout',
-  imports: [CommonModule, RippleModule, TopBar, RouterOutlet, BreadcrumbComponent],
+  imports: [CommonModule, RippleModule, MenuBar, RouterOutlet, BreadcrumbComponent],
   template: `
     <main class="flex flex-col h-screen">
       <nav class="fixed w-full">
-        <app-top-bar />
+        <app-menu-bar />
       </nav>
       <section class="flex-grow pt-22 px-10 pb-16 overflow-auto">
-        <div class="-mt-8 -ml-4">
+        <div class="-ml-4">
           <app-breadcrumb />
         </div>
         <router-outlet />
