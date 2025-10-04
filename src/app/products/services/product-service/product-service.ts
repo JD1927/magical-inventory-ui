@@ -4,8 +4,7 @@ import type { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import type { ICreateProductDto, IProduct, IUpdateProductDto } from '../../models/product.model';
 
-const PAGE_LIMIT = 15;
-const INITIAL_OFFSET = 0;
+export const PAGE_LIMIT = 15;
 const API_PRODUCTS = `${environment.apiUrl}/products`;
 
 @Injectable({
@@ -14,7 +13,7 @@ const API_PRODUCTS = `${environment.apiUrl}/products`;
 export class ProductService {
   private http: HttpClient = inject(HttpClient);
 
-  getAll(limit: number = PAGE_LIMIT, offset: number = INITIAL_OFFSET): Observable<IProduct[]> {
+  getAll(limit: number, offset: number): Observable<IProduct[]> {
     return this.http.get<IProduct[]>(API_PRODUCTS, { params: { limit, offset } });
   }
 
