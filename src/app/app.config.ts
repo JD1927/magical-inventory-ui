@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { APP_ROUTES } from './app.routes';
 import { Noir } from './preset.prime';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,8 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES),
     provideHttpClient(),
+    // Added for PrimeNG
+    provideAnimations(),
     providePrimeNG({
       theme: {
         preset: Noir,
