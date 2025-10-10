@@ -1,8 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import type { ICreateProductDto, IProduct, IUpdateProductDto } from '../../models/product.model';
+import { environment } from '@environments/environment';
+import type {
+  ICreateProductDto,
+  IProduct,
+  IUpdateProductDto,
+} from '@products/models/product.model';
 
 export const PAGE_LIMIT = 15;
 const API_PRODUCTS = `${environment.apiUrl}/products`;
