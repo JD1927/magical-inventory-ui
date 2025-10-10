@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { BreadcrumbComponent, MenuBar } from '@dashboard/components';
 import { RippleModule } from 'primeng/ripple';
-import { BreadcrumbComponent, MenuBar } from '../components';
 
 @Component({
   selector: 'app-dashboard-layout',

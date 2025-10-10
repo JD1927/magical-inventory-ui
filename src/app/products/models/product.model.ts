@@ -1,4 +1,5 @@
-import type { ICategory } from '../../categories/models/category.model';
+import type { FormControl } from '@angular/forms';
+import type { ICategory } from '@categories/models/category.model';
 
 export interface IProduct {
   id: string;
@@ -12,6 +13,15 @@ export interface IProduct {
   secondaryCategory: ICategory;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface ICreateProductForm {
+  name: FormControl<string>;
+  description: FormControl<string>;
+  minStock: FormControl<number>;
+  mainCategory: FormControl<ICategory | null>;
+  secondaryCategory: FormControl<ICategory | null>;
+  isActive: FormControl<boolean>;
 }
 
 export interface ICreateProductDto {
