@@ -3,6 +3,33 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@products/*": [
+        "src/app/products/*"
+      ],
+      "@categories/*": [
+        "src/app/categories/*"
+      ],
+      "@suppliers/*": [
+        "src/app/suppliers/*"
+      ],
+      "@common/*": [
+        "src/app/common/*"
+      ],
+      "@dashboard/*": [
+        "src/app/dashboard/*"
+      ]
+    },
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,

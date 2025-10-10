@@ -20,8 +20,8 @@ export default tseslint.config(
     files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
-        projectService: true,
-        sourceType: 'commonjs',
+        project: ['./tsconfig.app.json'],
+        sourceType: 'module',
         tsconfigRootDir: import.meta.dirname,
       },
     },
