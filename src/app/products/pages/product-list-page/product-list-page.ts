@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import type { IPaginationDto } from '../../../common/models/pagination.model';
-import { ProductsTable } from '../../components';
-import type { IProduct } from '../../models/product.model';
-import { PAGE_LIMIT, ProductService } from '../../services/product-service/product-service';
+import type { IPaginationDto } from '@common/models/pagination.model';
+import { ProductsTable } from '@products/components';
+import type { IProduct } from '@products/models/product.model';
+import { PAGE_LIMIT, ProductService } from '@products/services';
 
 @Component({
   selector: 'app-product-list-page',
