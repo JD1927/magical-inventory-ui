@@ -33,7 +33,7 @@ export class ProductService {
     return this.http.patch<IProduct>(`${API_PRODUCTS}/${id}`, dto);
   }
 
-  delete(id: string): void {
-    this.http.delete(`${API_PRODUCTS}/${id}`);
+  delete(id: string) {
+    return this.http.delete(`${API_PRODUCTS}/${id}`);
   }
 }
