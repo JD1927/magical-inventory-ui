@@ -3,40 +3,58 @@
     <p-floatlabel>
       <!-- eslint-disable-next-line @angular-eslint/template/no-autofocus -->
       <input pInputText id="name" formControlName="name" type="text" class="w-full" autofocus autocomplete
-        aria-describedby="name-help" />
+        aria-describedby="name-help" [invalid]="formValidations.isInvalid(productForm, 'name')" />
       <label for="name">Name</label>
     </p-floatlabel>
+    @if (formValidations.isInvalid(productForm, 'name')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Name field is required.</p-message>
+    }
   </div>
 
-  <div class="mt-4 mb-4">
+  <div class="mb-4">
     <p-floatlabel>
       <textarea id="description" pTextarea formControlName="description" [rows]="5" style="resize: none" class="w-full"
-        aria-describedby="description-help"></textarea>
+        aria-describedby="description-help"
+        [invalid]="formValidations.isInvalid(productForm, 'description')"></textarea>
       <label for="description">Description</label>
     </p-floatlabel>
+    @if (formValidations.isInvalid(productForm, 'description')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Description field must have between 3
+      and 500 characters.</p-message>
+    } @else {
     <small id="description-help">Enter a description for you product. It is optional, but please, do it!</small>
+    }
   </div>
 
-  <div class="grid grid-cols-2 gap-4 mt-4 mb-4">
-    <p-floatlabel>
-      <label for="mainCategory">Main Category</label>
-      <p-select class="w-full" id="mainCategory" formControlName="mainCategory" [options]="mainCategories()"
-        optionLabel="name" class="w-full" placeholder="Select a Main Category" />
-    </p-floatlabel>
-
-    <p-floatlabel>
-      <label for="secondaryCategory">Secondary Category</label>
-      <p-select class="w-full" id="secondaryCategory" formControlName="secondaryCategory"
-        [options]="secondaryCategories()" optionLabel="name" class="w-full" placeholder="Select a Secondary Category" />
-    </p-floatlabel>
-  </div>
-
-  <div class="grid grid-cols-2 gap-4 mt-4 mb-4">
+  <div class="grid grid-cols-2 gap-4 mb-4">
     <div>
-      <label for="minStock">Minimum Stock</label>
-      <p-inputnumber id="minStock" class="w-full" inputStyleClass="w-full" formControlName="minStock" [min]="1"
-        [showButtons]="true" />
+      <p-floatlabel>
+        <p-select class="w-full" inputId="mainCategory" formControlName="mainCategory" [options]="mainCategories()"
+          optionLabel="name" class="w-full" [invalid]="formValidations.isInvalid(productForm, 'mainCategory')" />
+        <label for="mainCategory">Main Category</label>
+      </p-floatlabel>
+      @if (formValidations.isInvalid(productForm, 'mainCategory')) {
+      <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Main category field is
+        required.</p-message>
+      }
     </div>
+
+    <div>
+      <p-floatlabel>
+        <p-select class="w-full" inputId="secondaryCategory" formControlName="secondaryCategory"
+          [options]="secondaryCategories()" optionLabel="name" class="w-full" />
+        <label for="secondaryCategory">Secondary Category</label>
+      </p-floatlabel>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <p-floatlabel>
+      <p-inputnumber id="number" inputId="minStock" class="w-full" inputStyleClass="w-full" formControlName="minStock"
+        [min]="1" [max]="100" [showButtons]="true" />
+      <label for="minStock">Minimum Stock</label>
+    </p-floatlabel>
 
     <div class="flex justify-start items-center">
       <p-checkbox id="isActive" formControlName="isActive" [binary]="true" />

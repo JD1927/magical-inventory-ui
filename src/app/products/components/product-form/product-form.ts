@@ -6,6 +6,7 @@ import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { ICategory } from '@categories/models/category.model';
 import { CategoryService } from '@categories/services';
+import { FormValidations } from '@common/utils';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import type { ICreateProductDto, ICreateProductForm } from '@products/models/product.model';
 import {
@@ -19,6 +20,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 
@@ -36,6 +38,7 @@ export interface IProductFormResult {
     FloatLabel,
     InputNumberModule,
     InputTextModule,
+    MessageModule,
     ReactiveFormsModule,
     SelectModule,
     TextareaModule,
@@ -49,8 +52,9 @@ export class ProductForm {
   productId = input<string | undefined>(undefined);
   // Form
   productForm!: FormGroup<ICreateProductForm>;
-  categoryService = inject(CategoryService);
+  formValidations = inject(FormValidations);
   // Categories
+  categoryService = inject(CategoryService);
   mainCategories: Signal<ICategory[]> = toSignal(this.categoryService.getAllCategories(true), {
     initialValue: [],
   });
@@ -89,11 +93,18 @@ export class ProductForm {
         }),
         description: new FormControl<string>('', {
           nonNullable: true,
-          validators: Validators.maxLength(500),
+          validators: Validators.compose([Validators.minLength(3), Validators.maxLength(500)]),
         }),
         mainCategory: new FormControl<ICategory | null>(null, Validators.required),
         secondaryCategory: new FormControl<ICategory | null>(null),
-        minStock: new FormControl<number>(1, { nonNullable: true, validators: Validators.min(1) }),
+        minStock: new FormControl<number>(1, {
+          nonNullable: true,
+          validators: Validators.compose([
+            Validators.required,
+            Validators.min(1),
+            Validators.max(100),
+          ]),
+        }),
         isActive: new FormControl<boolean>(true, {
           nonNullable: true,
           validators: Validators.required,
