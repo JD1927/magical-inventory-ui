@@ -20,7 +20,6 @@
   <div class="grid grid-cols-2 gap-4 mt-4 mb-4">
     <p-floatlabel>
       <label for="mainCategory">Main Category</label>
-      <!-- <input pInputText id="mainCategory" formControlName="mainCategory" type="text" class="w-full" /> -->
       <p-select class="w-full" id="mainCategory" formControlName="mainCategory" [options]="mainCategories()"
         optionLabel="name" class="w-full" placeholder="Select a Main Category" />
     </p-floatlabel>
@@ -48,6 +47,7 @@
 
   <div class="flex justify-end gap-2 mt-4">
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!productForm.valid" />
+    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!productForm.valid"
+      [loading]="createProductStore.loading()" />
   </div>
 </form>

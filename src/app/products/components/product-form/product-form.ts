@@ -1,12 +1,18 @@
 import { CommonModule } from '@angular/common';
 import type { Signal } from '@angular/core';
-import { Component, effect, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { ICategory } from '@categories/models/category.model';
 import { CategoryService } from '@categories/services';
+import { Dispatcher, Events } from '@ngrx/signals/events';
 import type { ICreateProductDto, ICreateProductForm } from '@products/models/product.model';
+import {
+  createNewProductApiEvents,
+  CreateProductStore,
+  getAllProductsApiEvents,
+} from '@products/store';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -36,6 +42,7 @@ export interface IProductFormResult {
   ],
   templateUrl: './product-form.html',
   styleUrl: './product-form.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductForm {
   // Inputs
@@ -53,6 +60,12 @@ export class ProductForm {
       initialValue: [],
     },
   );
+
+  // Store, Events & Dispatcher
+  createProductStore = inject(CreateProductStore);
+  dispatcher = inject(Dispatcher);
+  events = inject(Events);
+
   // Form Builder & Dialog
   private fb: FormBuilder = inject(FormBuilder);
   private productDialogRef = inject(DynamicDialogRef);
@@ -63,9 +76,11 @@ export class ProductForm {
       const id = this.productId();
       console.log('🚀 ~ ProductForm ~ constructor ~ id:', id);
     });
+
+    this.listenToCreationEvents();
   }
 
-  initializeForm(): void {
+  private initializeForm(): void {
     this.productForm = this.fb.group(
       {
         name: new FormControl<string>('', {
@@ -88,6 +103,25 @@ export class ProductForm {
     );
   }
 
+  private listenToCreationEvents(): void {
+    // Move subscription to constructor for proper injection context
+    this.events
+      .on(createNewProductApiEvents.createdSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        // Refresh product list and close dialog
+        this.dispatcher.dispatch(getAllProductsApiEvents.load());
+        this.productDialogRef.close();
+      });
+
+    this.events
+      .on(createNewProductApiEvents.createdFailure)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ payload }) => {
+        console.error(payload);
+      });
+  }
+
   onSubmit(): void {
     if (!this.productForm.valid) return;
     // Create DTO from form value
@@ -102,12 +136,20 @@ export class ProductForm {
       mainCategoryId: mainCategory?.id ?? null,
       secondaryCategoryId: secondaryCategory?.id ?? null,
     };
-    // Close dialog with form value as result
-    const result: IProductFormResult = { productId: this.productId(), createProductDto };
-    this.productDialogRef.close(result);
+
+    this.handleFormSubmit({ productId: this.productId(), createProductDto });
+  }
+
+  private handleFormSubmit(productFormResult: IProductFormResult): void {
+    if (!productFormResult?.productId) {
+      this.dispatcher.dispatch(
+        createNewProductApiEvents.create(productFormResult.createProductDto),
+      );
+    }
   }
 
   onCancel(): void {
+    if (!this.productDialogRef) return;
     this.productDialogRef.close();
   }
 }
