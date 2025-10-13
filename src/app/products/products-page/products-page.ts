@@ -1,9 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { PageHeader } from '@common/components';
-import type { IProductFormResult } from '@products/components';
-import type { ICreateProductDto } from '@products/models/product.model';
-import { ProductDialogService, ProductService } from '@products/services';
+import { ProductDialogService } from '@products/services';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 
@@ -11,6 +9,7 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
   selector: 'app-products-page',
   imports: [RouterOutlet, PageHeader, ButtonModule, DynamicDialogModule],
   providers: [ProductDialogService, DialogService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-page-header title="Products" description="Manage your product inventory">
       <div class="ml-auto flex gap-2">
@@ -24,32 +23,8 @@ import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 })
 export class ProductsPage {
   productDialogService = inject(ProductDialogService);
-  productService = inject(ProductService);
 
   onNewProduct(): void {
     this.productDialogService.openProductDialog();
-    this.productDialogService.productDialogRef?.onClose.subscribe(
-      ({ productId, createProductDto }: IProductFormResult) => {
-        this.handleFormSubmit(productId, createProductDto);
-      },
-    );
-  }
-
-  handleFormSubmit(productId: string | undefined, createProductDto: ICreateProductDto): void {
-    if (productId) {
-      return;
-    }
-    this.createNewProduct(createProductDto);
-  }
-
-  createNewProduct(createProductDto: ICreateProductDto): void {
-    this.productService.create(createProductDto).subscribe({
-      next: (product) => {
-        console.log('Product created:', product);
-      },
-      error: (error) => {
-        console.error('Error creating product:', error);
-      },
-    });
   }
 }
