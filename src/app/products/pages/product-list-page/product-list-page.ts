@@ -1,42 +1,49 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, signal, untracked } from '@angular/core';
-import type { IPaginationDto } from '@common/models/pagination.model';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductsTable } from '@products/components';
-import type { IProduct } from '@products/models/product.model';
-import { PAGE_LIMIT, ProductService } from '@products/services';
+import {
+  deleteProductApiEvents,
+  DeleteProductStore,
+  getAllProductsApiEvents,
+  ProductsStore,
+} from '@products/store';
 
 @Component({
   selector: 'app-product-list-page',
   imports: [CommonModule, ProductsTable],
   templateUrl: './product-list-page.html',
   styleUrl: './product-list-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductListPage {
-  productService = inject(ProductService);
-  products = signal<IProduct[]>([]);
-  pagination = signal<IPaginationDto>({ limit: PAGE_LIMIT, offset: 0 });
+  productsStore = inject(ProductsStore);
+  deleteProductStore = inject(DeleteProductStore);
+  dispatcher = inject(Dispatcher);
+  events = inject(Events);
 
   constructor() {
+    this.dispatcher.dispatch(getAllProductsApiEvents.load());
     effect(() => {
-      const pagination = this.pagination();
-
-      untracked(() => {
-        this.getAllProducts(pagination);
-      });
+      const errorMessage = this.productsStore.errorMessage();
+      if (errorMessage) {
+        console.error('Error loading products:', errorMessage);
+      }
     });
+    this.listenToProductListChanges();
   }
 
-  getAllProducts(pagination: IPaginationDto): void {
-    // Pagination DTO
-    const { limit, offset } = pagination;
-    // Get all products by pagination
-    this.productService.getAll(limit, offset).subscribe({
-      next: (products: IProduct[]) => {
-        this.products.set([...products]);
-      },
-      error: (err: any) => {
-        console.log('🚀 ~ ProductListPage ~ getAllProducts ~ err:', err);
-      },
-    });
+  listenToProductListChanges(): void {
+    this.events
+      .on(deleteProductApiEvents.deletedSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.dispatcher.dispatch(getAllProductsApiEvents.load());
+      });
+  }
+
+  onDeleteProduct(productId: string): void {
+    this.dispatcher.dispatch(deleteProductApiEvents.delete(productId));
   }
 }
