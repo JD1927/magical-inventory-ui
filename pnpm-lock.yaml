@@ -26,9 +26,9 @@ importers:
       '@angular/router':
         specifier: ^20.3.0
         version: 20.3.0(@angular/common@20.3.0(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(@angular/platform-browser@20.3.0(@angular/animations@20.3.0(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2)))(@angular/common@20.3.0(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2)))(rxjs@7.8.2)
-      '@ngrx/effects':
+      '@ngrx/operators':
         specifier: ^20.0.1
-        version: 20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(@ngrx/store@20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)
+        version: 20.0.1(rxjs@7.8.2)
       '@ngrx/signals':
         specifier: ^20.0.1
         version: 20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -1036,12 +1036,10 @@ packages:
   '@napi-rs/wasm-runtime@1.0.5':
     resolution: {integrity: sha512-TBr9Cf9onSAS2LQ2+QHx6XcC6h9+RIzJgbqG3++9TUZSH204AwEy5jg3BTQ0VATsyoGj4ee49tN/y6rvaOOtcg==}
 
-  '@ngrx/effects@20.0.1':
-    resolution: {integrity: sha512-bUwAPxwk9ly9FAalECLsjEFrIrrEK5iE95idv1TCekMwShqWuw1XzhqVqcmonbCFEiAGBDgyvDYwJxGi0W6UPw==}
+  '@ngrx/operators@20.0.1':
+    resolution: {integrity: sha512-IIaVUlPU2LB1FbZ2m4/4FmAZnTEDCDgC115naods4SHo6U+DU7ZzItfIGDLeEPDaHa8MnjVJwOtrXjy73eJcNg==}
     peerDependencies:
-      '@angular/core': ^20.0.0
-      '@ngrx/store': 20.0.1
-      rxjs: ^6.5.3 || ^7.5.0
+      rxjs: ^6.5.3 || ^7.4.0
 
   '@ngrx/signals@20.0.1':
     resolution: {integrity: sha512-7YYPH4nTkmLEgibJnwi527toEm3tsnlCzp5AzT9osS8JxN9cHxkG6iQ7fzhw9N4bTt+8wyUZb7PF0YLFYD2RHA==}
@@ -1051,12 +1049,6 @@ packages:
     peerDependenciesMeta:
       rxjs:
         optional: true
-
-  '@ngrx/store@20.0.1':
-    resolution: {integrity: sha512-SWIHKe9lBoNf4rOklaWbCRAz8ie1Duf1iL4SMe6BipqhdUfJ/pEbcz3xMQUIlv1CciHhRgMJFTzFrDxamYHknQ==}
-    peerDependencies:
-      '@angular/core': ^20.0.0
-      rxjs: ^6.5.3 || ^7.5.0
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -4593,10 +4585,8 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@ngrx/effects@20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(@ngrx/store@20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngrx/operators@20.0.1(rxjs@7.8.2)':
     dependencies:
-      '@angular/core': 20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2)
-      '@ngrx/store': 20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs: 7.8.2
       tslib: 2.8.1
 
@@ -4606,12 +4596,6 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       rxjs: 7.8.2
-
-  '@ngrx/store@20.0.1(@angular/core@20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2))(rxjs@7.8.2)':
-    dependencies:
-      '@angular/core': 20.3.0(@angular/compiler@20.3.0)(rxjs@7.8.2)
-      rxjs: 7.8.2
-      tslib: 2.8.1
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
