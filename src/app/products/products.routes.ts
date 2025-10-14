@@ -1,5 +1,5 @@
 import type { Routes } from '@angular/router';
-import { ProductsPage } from './products-page/products-page';
+import { ProductsPage } from './pages/products-page/products-page';
 
 export const PRODUCT_ROUTES: Routes = [
   {
