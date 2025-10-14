@@ -37,4 +37,10 @@ export const TOP_BAR_MENU_ITEMS: MenuItem[] = [
     icon: PrimeIcons.SPARKLES,
     routerLink: '/dashboard/products',
   },
+  {
+    automationId: 'categories-item',
+    label: 'Categories',
+    icon: PrimeIcons.TAGS,
+    routerLink: '/dashboard/categories',
+  },
 ];

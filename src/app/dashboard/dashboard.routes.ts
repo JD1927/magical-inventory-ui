@@ -17,6 +17,11 @@ export const DASHBOARD_ROUTES: Routes = [
         loadChildren: () => import('../products/products.routes').then((m) => m.PRODUCT_ROUTES),
       },
       {
+        path: 'categories',
+        data: { label: 'Categories' },
+        loadChildren: () => import('../categories/categories.routes').then((m) => m.ROUTES),
+      },
+      {
         path: '',
         pathMatch: 'full',
         redirectTo: '/dashboard/home',
