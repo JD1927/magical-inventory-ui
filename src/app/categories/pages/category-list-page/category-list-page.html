@@ -1,1 +1,10 @@
-<p>category-list-page works!</p>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+  <div class="col-span-1 lg:col-span-8">
+    <app-categories-table [categories]="categoriesStore.categories()" (deleteCategory)="onDeleteCategory($event)" />
+  </div>
+  <div class="col-span-1 lg:col-span-4">
+    <p-card header="Create Category">
+      <app-category-form />
+    </p-card>
+  </div>
+</div>
