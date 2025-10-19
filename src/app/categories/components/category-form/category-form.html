@@ -1,0 +1,42 @@
+<form [formGroup]="categoryForm" (ngSubmit)="onSubmit()" class="grid gap-4">
+  <div class="grid grid-cols-6 gap-4 mt-6 mb-4">
+    <div class="col-span-4">
+      <p-floatlabel>
+
+        <input pInputText id="name" formControlName="name" type="text" class="w-full" autocomplete
+          aria-describedby="name-help" [invalid]="formValidations.isInvalid(categoryForm, 'name')" />
+        <label for="name">Name</label>
+      </p-floatlabel>
+      @if (formValidations.isInvalid(categoryForm, 'name')) {
+      <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Name field is required.</p-message>
+      }
+    </div>
+
+    <div class="col-span-2 flex justify-start items-start">
+      <p-toggleswitch inputId="isMain" name="isMain" formControlName="isMain"
+        [invalid]="formValidations.isInvalid(categoryForm, 'isMain')" />
+      <label for="isMain" class="ml-2">Main</label>
+    </div>
+  </div>
+
+  <div>
+    <p-floatlabel>
+      <textarea id="description" pTextarea formControlName="description" [rows]="5" style="resize: none" class="w-full"
+        aria-describedby="description-help"
+        [invalid]="formValidations.isInvalid(categoryForm, 'description')"></textarea>
+      <label for="description">Description</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(categoryForm, 'description')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Description field must have between 3 and 500 characters.
+    </p-message>
+    } @else {
+    <small id="description-help">Enter a description for your category. It is optional, but please, do it!</small>
+    }
+  </div>
+
+  <div class="flex justify-end gap-2">
+    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!categoryForm.valid"
+      [loading]="createCategoryStore.loading()" />
+  </div>
+</form>
