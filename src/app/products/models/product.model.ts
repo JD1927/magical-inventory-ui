@@ -11,8 +11,8 @@ export interface IProduct {
   isActive: boolean;
   mainCategory: ICategory;
   secondaryCategory: ICategory;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ICreateProductForm {

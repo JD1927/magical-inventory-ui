@@ -85,33 +85,30 @@ export class ProductForm {
   }
 
   private initializeForm(): void {
-    this.productForm = this.fb.group(
-      {
-        name: new FormControl<string>('', {
-          nonNullable: true,
-          validators: Validators.compose([Validators.required, Validators.minLength(3)]),
-        }),
-        description: new FormControl<string>('', {
-          nonNullable: true,
-          validators: Validators.compose([Validators.minLength(3), Validators.maxLength(500)]),
-        }),
-        mainCategory: new FormControl<ICategory | null>(null, Validators.required),
-        secondaryCategory: new FormControl<ICategory | null>(null),
-        minStock: new FormControl<number>(1, {
-          nonNullable: true,
-          validators: Validators.compose([
-            Validators.required,
-            Validators.min(1),
-            Validators.max(100),
-          ]),
-        }),
-        isActive: new FormControl<boolean>(true, {
-          nonNullable: true,
-          validators: Validators.required,
-        }),
-      },
-      { updateOn: 'blur' },
-    );
+    this.productForm = this.fb.group({
+      name: new FormControl<string>('', {
+        nonNullable: true,
+        validators: Validators.compose([Validators.required, Validators.minLength(3)]),
+      }),
+      description: new FormControl<string>('', {
+        nonNullable: true,
+        validators: Validators.compose([Validators.minLength(3), Validators.maxLength(500)]),
+      }),
+      mainCategory: new FormControl<ICategory | null>(null, Validators.required),
+      secondaryCategory: new FormControl<ICategory | null>(null),
+      minStock: new FormControl<number>(1, {
+        nonNullable: true,
+        validators: Validators.compose([
+          Validators.required,
+          Validators.min(1),
+          Validators.max(100),
+        ]),
+      }),
+      isActive: new FormControl<boolean>(true, {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+    });
   }
 
   private listenToCreationEvents(): void {
