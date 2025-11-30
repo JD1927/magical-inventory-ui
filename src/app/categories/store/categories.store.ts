@@ -51,12 +51,12 @@ export const CategoriesStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((_, events = inject(Events), categoryService = inject(CategoryService)) => ({
-    loadCategories$: events.on(getAllCategoriesApiEvents.load).pipe(
+  withEffects((_, events = inject(Events), service = inject(CategoryService)) => ({
+    load$: events.on(getAllCategoriesApiEvents.load).pipe(
       switchMap(() => {
-        return categoryService.getAllCategories().pipe(
+        return service.getAllCategories().pipe(
           mapResponse({
-            next: (categories) => getAllCategoriesApiEvents.loadedSuccess(categories),
+            next: (result) => getAllCategoriesApiEvents.loadedSuccess(result),
             error: (error: { message: string; statusCode: number }) =>
               getAllCategoriesApiEvents.loadedFailure(error.message ?? 'Could not load categories'),
           }),

@@ -41,12 +41,12 @@ export const CreateCategoryStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((_, events = inject(Events), categoryService = inject(CategoryService)) => ({
-    createCategory$: events.on(createNewCategoryApiEvents.create).pipe(
+  withEffects((_, events = inject(Events), service = inject(CategoryService)) => ({
+    create$: events.on(createNewCategoryApiEvents.create).pipe(
       switchMap(({ payload: dto }) => {
-        return categoryService.create(dto).pipe(
+        return service.create(dto).pipe(
           mapResponse({
-            next: (category) => createNewCategoryApiEvents.createdSuccess(category),
+            next: (result) => createNewCategoryApiEvents.createdSuccess(result),
             error: (error: { message: string; statusCode: number }) =>
               createNewCategoryApiEvents.createdFailure(
                 error.message ?? 'Could not perform category creation',

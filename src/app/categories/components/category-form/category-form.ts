@@ -30,12 +30,10 @@ export interface ICategoryFormResult {
   imports: [
     ButtonModule,
     CommonModule,
-    CommonModule,
     FloatLabel,
     InputNumberModule,
     InputTextModule,
     MessageModule,
-    ReactiveFormsModule,
     ReactiveFormsModule,
     SelectModule,
     TextareaModule,
