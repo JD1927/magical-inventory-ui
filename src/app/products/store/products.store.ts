@@ -48,13 +48,13 @@ export const ProductsStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((state, events = inject(Events), productService = inject(ProductService)) => ({
-    loadProducts$: events.on(getAllProductsApiEvents.load).pipe(
+  withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
+    load$: events.on(getAllProductsApiEvents.load).pipe(
       switchMap(() => {
         const pagination = state.pagination();
         const limit = pagination?.limit ?? PAGE_LIMIT;
         const offset = pagination?.offset ?? 0;
-        return productService.getAll(limit, offset).pipe(
+        return service.getAll(limit, offset).pipe(
           mapResponse({
             next: (products) => getAllProductsApiEvents.loadedSuccess(products),
             error: (error: { message: string; statusCode: number }) =>

@@ -41,10 +41,10 @@ export const CreateProductStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((state, events = inject(Events), productService = inject(ProductService)) => ({
-    createProduct$: events.on(createNewProductApiEvents.create).pipe(
+  withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
+    create$: events.on(createNewProductApiEvents.create).pipe(
       switchMap(({ payload: dto }) => {
-        return productService.create(dto).pipe(
+        return service.create(dto).pipe(
           mapResponse({
             next: (product) => createNewProductApiEvents.createdSuccess(product),
             error: () => createNewProductApiEvents.createdFailure('Could not create product'),

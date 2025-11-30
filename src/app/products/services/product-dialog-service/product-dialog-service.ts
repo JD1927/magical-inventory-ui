@@ -8,10 +8,10 @@ import { DialogService } from 'primeng/dynamicdialog';
 })
 export class ProductDialogService {
   dialogService: DialogService = inject(DialogService);
-  productDialogRef: DynamicDialogRef | undefined;
+  dialogRef: DynamicDialogRef<ProductForm> | null = null;
 
-  openProductDialog(productId?: string): DynamicDialogRef {
-    this.productDialogRef = this.dialogService.open(ProductForm, {
+  openDialog(productId?: string): DynamicDialogRef<ProductForm> | null {
+    this.dialogRef = this.dialogService.open(ProductForm, {
       modal: true,
       header: productId ? 'Edit Product' : 'Create Product',
       width: '50%',
@@ -20,12 +20,12 @@ export class ProductDialogService {
       breakpoints: { '960px': '70%', '640px': '100%' },
     });
 
-    return this.productDialogRef;
+    return this.dialogRef;
   }
 
-  closeProductDialog(): void {
-    if (!this.productDialogRef) return;
+  closeDialog(): void {
+    if (!this.dialogRef) return;
 
-    this.productDialogRef.close();
+    this.dialogRef.close();
   }
 }

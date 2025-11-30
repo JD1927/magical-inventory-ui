@@ -41,10 +41,10 @@ export const DeleteProductStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((state, events = inject(Events), productService = inject(ProductService)) => ({
-    deleteProduct$: events.on(deleteProductApiEvents.delete).pipe(
-      switchMap(({ payload: productId }) => {
-        return productService.delete(productId).pipe(
+  withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
+    delete$: events.on(deleteProductApiEvents.delete).pipe(
+      switchMap(({ payload: id }) => {
+        return service.delete(id).pipe(
           mapResponse({
             next: () => deleteProductApiEvents.deletedSuccess(),
             error: () => deleteProductApiEvents.deletedFailure('Could not delete product'),

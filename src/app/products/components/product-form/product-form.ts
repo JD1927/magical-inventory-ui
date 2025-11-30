@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import type { Signal } from '@angular/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { ICategory } from '@categories/models/category.model';
@@ -9,11 +9,7 @@ import { CategoryService } from '@categories/services';
 import { FormValidations } from '@common/utils';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import type { ICreateProductDto, ICreateProductForm } from '@products/models/product.model';
-import {
-  createNewProductApiEvents,
-  CreateProductStore,
-  getAllProductsApiEvents,
-} from '@products/store';
+import { createNewProductApiEvents, CreateProductStore } from '@products/store';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -72,7 +68,7 @@ export class ProductForm {
 
   // Form Builder & Dialog
   private fb: FormBuilder = inject(FormBuilder);
-  private productDialogRef = inject(DynamicDialogRef);
+  private dialogRef = inject(DynamicDialogRef<ProductForm>);
 
   constructor() {
     this.initializeForm();
@@ -80,8 +76,6 @@ export class ProductForm {
       const id = this.productId();
       console.log('🚀 ~ ProductForm ~ constructor ~ id:', id);
     });
-
-    this.listenToCreationEvents();
   }
 
   private initializeForm(): void {
@@ -111,25 +105,6 @@ export class ProductForm {
     });
   }
 
-  private listenToCreationEvents(): void {
-    // Move subscription to constructor for proper injection context
-    this.events
-      .on(createNewProductApiEvents.createdSuccess)
-      .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        // Refresh product list and close dialog
-        this.dispatcher.dispatch(getAllProductsApiEvents.load());
-        this.productDialogRef.close();
-      });
-
-    this.events
-      .on(createNewProductApiEvents.createdFailure)
-      .pipe(takeUntilDestroyed())
-      .subscribe(({ payload }) => {
-        console.error(payload);
-      });
-  }
-
   onSubmit(): void {
     if (!this.productForm.valid) return;
     // Create DTO from form value
@@ -157,7 +132,7 @@ export class ProductForm {
   }
 
   onCancel(): void {
-    if (!this.productDialogRef) return;
-    this.productDialogRef.close();
+    if (!this.dialogRef) return;
+    this.dialogRef.close();
   }
 }
