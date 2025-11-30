@@ -43,4 +43,10 @@ export const TOP_BAR_MENU_ITEMS: MenuItem[] = [
     icon: PrimeIcons.TAGS,
     routerLink: '/dashboard/categories',
   },
+  {
+    automationId: 'suppliers-item',
+    label: 'Suppliers',
+    icon: PrimeIcons.SHOP,
+    routerLink: '/dashboard/suppliers',
+  },
 ];
