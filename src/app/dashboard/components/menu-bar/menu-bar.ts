@@ -49,4 +49,10 @@ export const TOP_BAR_MENU_ITEMS: MenuItem[] = [
     icon: PrimeIcons.SHOP,
     routerLink: '/dashboard/suppliers',
   },
+  {
+    automationId: 'inventory-item',
+    label: 'Inventory',
+    icon: PrimeIcons.WAREHOUSE,
+    routerLink: '/dashboard/inventory',
+  },
 ];

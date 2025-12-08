@@ -27,6 +27,11 @@ export const DASHBOARD_ROUTES: Routes = [
         loadChildren: () => import('../suppliers/suppliers.routes').then((m) => m.ROUTES),
       },
       {
+        path: 'inventory',
+        data: { label: 'Inventory' },
+        loadChildren: () => import('../inventory/inventory.routes').then((m) => m.ROUTES),
+      },
+      {
         path: '',
         pathMatch: 'full',
         redirectTo: '/dashboard/home',
