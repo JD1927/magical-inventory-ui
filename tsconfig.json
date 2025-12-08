@@ -23,6 +23,9 @@
       "@suppliers/*": [
         "src/app/suppliers/*"
       ],
+      "@inventory/*": [
+        "src/app/inventory/*"
+      ],
       "@common/*": [
         "src/app/common/*"
       ],

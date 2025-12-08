@@ -1,14 +1,14 @@
 import { inject } from '@angular/core';
+import type { IInventoryMovement, IInventoryRecord } from '@inventory/models/inventory.model';
+import { InventoryService } from '@inventory/services';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
-import type { IInventoryMovement, IInventoryRecord } from '@inventory/models/inventory.model';
 import {
   getAllInventoryMovementsApiEvents,
   getAllInventoryRecordsApiEvents,
 } from './events/inventory-api-events';
-import { InventoryService } from '../services/inventory-service/inventory-service';
 
 interface InventoryState {
   inventoryRecords: IInventoryRecord[];

@@ -2,8 +2,8 @@ import type {
   ICreateInInventoryMovementDto,
   ICreateInventoryMovementResult,
   ICreateOutInventoryMovementDto,
-  IInventoryRecord,
   IInventoryMovement,
+  IInventoryRecord,
 } from '@inventory/models/inventory.model';
 import { type } from '@ngrx/signals';
 import { eventGroup } from '@ngrx/signals/events';

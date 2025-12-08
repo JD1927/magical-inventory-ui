@@ -1,0 +1,93 @@
+<form [formGroup]="inventoryMovementForm" (ngSubmit)="onSubmitMovement()" class="grid gap-4">
+  <div class="mt-6 mb-4">
+    <p-floatlabel>
+
+      <input pInputText id="name" formControlName="name" type="text" class="w-full" autocomplete
+        aria-describedby="name-help" [invalid]="formValidations.isInvalid(inventoryMovementForm, 'name')" />
+      <label for="name">Name</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'name')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Name field is required.</p-message>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <textarea id="description" pTextarea formControlName="description" [rows]="5" style="resize: none" class="w-full"
+        aria-describedby="description-help"
+        [invalid]="formValidations.isInvalid(inventoryMovementForm, 'description')"></textarea>
+      <label for="description">Description</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'description')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Description field must have between 3 and 500 characters.
+    </p-message>
+    } @else {
+    <small id="description-help">Enter a description for your supplier. It is optional, but please, do it!</small>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <input pInputText id="nit" formControlName="nit" type="text" class="w-full" autocomplete
+        aria-describedby="nit-help" />
+      <label for="nit">NIT</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'nit')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      NIT field must have 9 digits.
+    </p-message>
+    } @else {
+    <small id="nit-help">Enter company identification for the government.</small>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <input pInputText id="address" formControlName="address" type="text" class="w-full" autocomplete
+        aria-describedby="address-help" />
+      <label for="address">Address</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'address')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Address field must have between 3 and 500 characters.
+    </p-message>
+    } @else {
+    <small id="address-help">E.g. Street 123...</small>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <input pInputText id="contactNumber" formControlName="contactNumber" type="text" class="w-full" autocomplete
+        aria-describedby="contact-number-help" />
+      <label for="contact-number">Contact number</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'contactNumber')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Contact number field must have between 7 and 10 digits.
+    </p-message>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <input pInputText id="email" formControlName="email" type="text" class="w-full" autocomplete
+        aria-describedby="email-help" />
+      <label for="email">Email</label>
+    </p-floatlabel>
+    @if (formValidations.isInvalid(inventoryMovementForm, 'email')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Email field must be valid.
+    </p-message>
+    } @else {
+    <small id="email-help">E.g. user@domain.com</small>
+    }
+  </div>
+
+  <div class="flex justify-end gap-2">
+    <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
+    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!inventoryMovementForm.valid"
+      [loading]="createSupplierStore.loading()" />
+  </div>
+</form>

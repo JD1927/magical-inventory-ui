@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
+import { InventoryService } from '@inventory/services';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
-import { InventoryService } from '../services/inventory-service/inventory-service';
 import {
   createNewInInventoryMovementApiEvents,
   createNewOutInventoryMovementApiEvents,
