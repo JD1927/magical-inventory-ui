@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
         tooltip: 1100, // tooltip
       },
       inputVariant: 'outlined',
-      ripple: true,
+      ripple: false,
     }),
   ],
 };

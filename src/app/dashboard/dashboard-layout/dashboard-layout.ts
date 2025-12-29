@@ -9,7 +9,7 @@ import { RippleModule } from 'primeng/ripple';
   imports: [CommonModule, RippleModule, MenuBar, RouterOutlet, BreadcrumbComponent],
   template: `
     <main class="flex flex-col h-screen">
-      <nav class="fixed w-full">
+      <nav class="fixed w-full z-100">
         <app-menu-bar />
       </nav>
       <section class="flex-grow pt-22 px-10 pb-16 overflow-auto">
