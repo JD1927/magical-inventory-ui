@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { TruncatePipe } from '@common/pipes';
-import type { IProduct } from '@products/models/product.model';
+import type { IProductListResponse } from '@products/models/product.model';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
@@ -13,7 +13,7 @@ import { TagModule } from 'primeng/tag';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductsTable {
-  products = input.required<IProduct[]>();
+  productListResponse = input.required<IProductListResponse>();
   deleteProduct = output<string>();
   items = signal([
     {

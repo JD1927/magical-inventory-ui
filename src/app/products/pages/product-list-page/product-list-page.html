@@ -1,1 +1,2 @@
-<app-products-table [products]="productsStore.products()" (deleteProduct)="onDeleteProduct($event)" />
+<app-products-table [productListResponse]="productsStore.productListResponse()"
+  (deleteProduct)="onDeleteProduct($event)" />
