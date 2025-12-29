@@ -1,93 +1,113 @@
+<div class="mt-6 mb-4">
+  <p-selectbutton [(ngModel)]="movementType" [options]="options" optionLabel="label" optionValue="value" size="large"
+    fluid (onChange)="onMovementTypeChange($event)" />
+</div>
 <form [formGroup]="inventoryMovementForm" (ngSubmit)="onSubmitMovement()" class="grid gap-4">
-  <div class="mt-6 mb-4">
+  <div class="mb-4">
     <p-floatlabel>
-
-      <input pInputText id="name" formControlName="name" type="text" class="w-full" autocomplete
-        aria-describedby="name-help" [invalid]="formValidations.isInvalid(inventoryMovementForm, 'name')" />
-      <label for="name">Name</label>
+      <p-select id="productId" formControlName="productId" [options]="products()" [invalid]="isInvalid('productId')"
+        [filter]="true" optionLabel="name" optionValue="id" placeholder="Select a Product" class="w-full">
+        <ng-template let-product #item>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-warehouse" style="color: var(--primary-color)"></i>
+            <span>{{ product.name }} - </span>
+            <span>Stock: {{ product.stock }}</span>
+          </div>
+        </ng-template>
+      </p-select>
     </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'name')) {
-    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Name field is required.</p-message>
+    @if (isInvalid('productId')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Product field is required.</p-message>
     }
   </div>
 
   <div class="mb-4">
     <p-floatlabel>
-      <textarea id="description" pTextarea formControlName="description" [rows]="5" style="resize: none" class="w-full"
-        aria-describedby="description-help"
-        [invalid]="formValidations.isInvalid(inventoryMovementForm, 'description')"></textarea>
-      <label for="description">Description</label>
+      <p-inputnumber id="quantity" class="w-full" formControlName="quantity" mode="decimal" [showButtons]="true"
+        inputId="quantity-minmax-buttons" [min]="1" [step]="5" />
+      <label for="quantity">Quantity</label>
     </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'description')) {
+    @if (isInvalid('quantity')) {
     <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
-      Description field must have between 3 and 500 characters.
+      Quantity field must be minimum 1.
     </p-message>
-    } @else {
-    <small id="description-help">Enter a description for your supplier. It is optional, but please, do it!</small>
     }
   </div>
-
+  @if (movementType === 'IN') {
   <div class="mb-4">
     <p-floatlabel>
-      <input pInputText id="nit" formControlName="nit" type="text" class="w-full" autocomplete
-        aria-describedby="nit-help" />
-      <label for="nit">NIT</label>
+      <p-inputnumber id="purchasePrice" class="w-full" formControlName="purchasePrice" mode="decimal" prefix="$ "
+        [showButtons]="true" [step]="500" inputId="purchase-price-buttons" [min]="1" />
+      <label for="purchasePrice">Purchase Price</label>
     </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'nit')) {
+    @if (isInvalid('purchasePrice')) {
     <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
-      NIT field must have 9 digits.
-    </p-message>
-    } @else {
-    <small id="nit-help">Enter company identification for the government.</small>
-    }
-  </div>
-
-  <div class="mb-4">
-    <p-floatlabel>
-      <input pInputText id="address" formControlName="address" type="text" class="w-full" autocomplete
-        aria-describedby="address-help" />
-      <label for="address">Address</label>
-    </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'address')) {
-    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
-      Address field must have between 3 and 500 characters.
-    </p-message>
-    } @else {
-    <small id="address-help">E.g. Street 123...</small>
-    }
-  </div>
-
-  <div class="mb-4">
-    <p-floatlabel>
-      <input pInputText id="contactNumber" formControlName="contactNumber" type="text" class="w-full" autocomplete
-        aria-describedby="contact-number-help" />
-      <label for="contact-number">Contact number</label>
-    </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'contactNumber')) {
-    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
-      Contact number field must have between 7 and 10 digits.
+      Purchase price field must be minimum 100 and maximum 300.
     </p-message>
     }
   </div>
 
   <div class="mb-4">
     <p-floatlabel>
-      <input pInputText id="email" formControlName="email" type="text" class="w-full" autocomplete
-        aria-describedby="email-help" />
-      <label for="email">Email</label>
+      <p-inputnumber id="profitMarginPercentage" class="w-full" formControlName="profitMarginPercentage" mode="decimal"
+        suffix=" %" [showButtons]="true" [step]="10" inputId="profit-margin-percentage-minmax-buttons" [min]="100"
+        [max]="300" />
+      <label for="profitMarginPercentage">Profit Margin Percentage (100-300%)</label>
     </p-floatlabel>
-    @if (formValidations.isInvalid(inventoryMovementForm, 'email')) {
+    @if (isInvalid('profitMarginPercentage')) {
     <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
-      Email field must be valid.
+      Profit margin percentage field must be minimum 100 and maximum 300.
     </p-message>
-    } @else {
-    <small id="email-help">E.g. user@domain.com</small>
     }
   </div>
 
-  <div class="flex justify-end gap-2">
+  <div class="mb-4">
+    <p-floatlabel>
+      <p-inputnumber id="salePrice" class="w-full" formControlName="salePrice" mode="decimal" prefix="$ "
+        inputId="sale-price-minmax-buttons" [min]="1" />
+      <label for="salePrice">Sale Price</label>
+    </p-floatlabel>
+    @if (isInvalid('salePrice')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Sale price field must be minimum 1.
+    </p-message>
+    }
+  </div>
+
+  <div class="mb-4">
+    <p-floatlabel>
+      <p-select id="supplierId" formControlName="supplierId" [options]="supplierStore.suppliers()"
+        [invalid]="isInvalid('supplierId')" optionLabel="name" optionValue="id" placeholder="Select a Supplier"
+        class="w-full">
+        <ng-template let-supplier #item>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-store" style="color: var(--primary-color)"></i>
+            <span>{{ supplier.name }}</span>
+          </div>
+        </ng-template>
+      </p-select>
+    </p-floatlabel>
+    @if (isInvalid('supplierId')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Product field is required.</p-message>
+    }
+  </div>
+  } @else {
+  <div class="mb-4">
+    <p-floatlabel>
+      <p-inputnumber id="discountPercent" class="w-full" formControlName="discountPercent" mode="decimal" suffix=" %"
+        [showButtons]="true" [step]="10" inputId="discount-percent-minmax-buttons" [min]="0" [max]="100" />
+      <label for="discountPercent">Discount Percentage (0-100%)</label>
+    </p-floatlabel>
+    @if (isInvalid('discountPercent')) {
+    <p-message styleClass="mt-2" severity="error" size="small" variant="simple">
+      Discount percentage field must be minimum 0 and maximum 100.
+    </p-message>
+    }
+  </div>
+  }
+
+  <div class="mt-8 flex justify-end gap-2">
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!inventoryMovementForm.valid"
-      [loading]="createSupplierStore.loading()" />
+    <p-button icon="pi pi-plus" type="submit" label="Create" [loading]="createInventoryMovementStore.loading()" />
   </div>
 </form>

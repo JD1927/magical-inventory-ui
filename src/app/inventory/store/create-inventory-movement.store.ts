@@ -39,13 +39,13 @@ export const CreateInventoryMovementStore = signalStore(
       ...state,
       loading: false,
       errorMessage: null,
-      successMessage: `Inventory movement IN for '${payload.inventory.product.name}' was created successfully`,
+      successMessage: `Inventory movement IN for '${payload.inventoryRecord.product.name}' was created successfully`,
     })),
     on(createNewOutInventoryMovementApiEvents.createdSuccess, ({ payload }, state) => ({
       ...state,
       loading: false,
       errorMessage: null,
-      successMessage: `Inventory movement OUT for '${payload.inventory.product.name}' was created successfully`,
+      successMessage: `Inventory movement OUT for '${payload.inventoryRecord.product.name}' was created successfully`,
     })),
     on(
       createNewInInventoryMovementApiEvents.createdFailure,

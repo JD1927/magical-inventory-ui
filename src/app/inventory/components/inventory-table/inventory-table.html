@@ -7,6 +7,7 @@
       <th>Stock</th>
       <th>Average Cost</th>
       <th>Last Update</th>
+      <th>Actions</th>
     </tr>
   </ng-template>
   <ng-template #body let-record>
@@ -16,6 +17,9 @@
       <td>{{ record.stock }}</td>
       <td>{{ record.averageCost | currency }}</td>
       <td>{{ record.updatedAt | date: 'mediumDate' }}</td>
+      <td>
+        <p-button (onClick)="viewProductMovements.emit(record.product.id)" icon="pi pi-chart-bar" severity="success"
+          aria-label="View Movements" pTooltip="View Inventory Movements" size="small" />
     </tr>
   </ng-template>
 </p-table>

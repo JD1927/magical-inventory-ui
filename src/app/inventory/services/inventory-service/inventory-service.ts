@@ -31,13 +31,13 @@ export class InventoryService {
   }
 
   createInMovement(dto: ICreateInInventoryMovementDto): Observable<ICreateInventoryMovementResult> {
-    return this.http.post<ICreateInventoryMovementResult>(`${API_INVENTORY}/movements/in`, dto);
+    return this.http.post<ICreateInventoryMovementResult>(`${API_INVENTORY}/movement/in`, dto);
   }
 
   createOutMovement(
     dto: ICreateOutInventoryMovementDto,
   ): Observable<ICreateInventoryMovementResult> {
-    return this.http.post<ICreateInventoryMovementResult>(`${API_INVENTORY}/movements/out`, dto);
+    return this.http.post<ICreateInventoryMovementResult>(`${API_INVENTORY}/movement/out`, dto);
   }
 
   getInventoryRecordById(id: string): Observable<IInventoryRecord> {

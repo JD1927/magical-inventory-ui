@@ -15,6 +15,14 @@ export const ROUTES: Routes = [
           ),
       },
       {
+        path: 'movements/product/:productId',
+        data: { label: 'Inventory Movements' },
+        loadComponent: () =>
+          import('./pages/inventory-movements-page/inventory-movements-page').then(
+            (m) => m.InventoryMovementsPage,
+          ),
+      },
+      {
         path: '',
         pathMatch: 'full',
         redirectTo: '/dashboard/inventory/list',
