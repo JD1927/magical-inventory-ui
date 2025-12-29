@@ -27,13 +27,14 @@ export const SuppliersStore = signalStore(
   withReducer(
     on(getAllSuppliersApiEvents.load, (_, state) => ({
       ...state,
+      suppliers: [],
       loading: true,
       errorMessage: null,
       successMessage: null,
     })),
-    on(getAllSuppliersApiEvents.loadedSuccess, ({ payload: categories }, state) => ({
+    on(getAllSuppliersApiEvents.loadedSuccess, ({ payload: suppliers }, state) => ({
       ...state,
-      suppliers: categories,
+      suppliers: [...suppliers],
       loading: false,
       errorMessage: null,
       successMessage: 'Suppliers loaded successfully',
@@ -46,9 +47,9 @@ export const SuppliersStore = signalStore(
     })),
   ),
   withEffects((_, events = inject(Events), service = inject(SupplierService)) => ({
-    load$: events.on(getAllSuppliersApiEvents.load).pipe(
+    loadSuppliers$: events.on(getAllSuppliersApiEvents.load).pipe(
       switchMap(() => {
-        return service.getAllCategories().pipe(
+        return service.getAllSuppliers().pipe(
           mapResponse({
             next: (result) => getAllSuppliersApiEvents.loadedSuccess(result),
             error: (error: { message: string; statusCode: number }) =>

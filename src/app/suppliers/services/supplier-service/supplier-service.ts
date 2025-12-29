@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import type {
@@ -16,12 +16,8 @@ const API_SUPPLIERS = `${environment.apiUrl}/suppliers`;
 export class SupplierService {
   private http: HttpClient = inject(HttpClient);
 
-  getAllCategories(isMain?: boolean): Observable<ISupplier[]> {
-    let params = new HttpParams();
-    if (isMain !== undefined) {
-      params = params.set('isMain', isMain.toString());
-    }
-    return this.http.get<ISupplier[]>(API_SUPPLIERS, { params });
+  getAllSuppliers(): Observable<ISupplier[]> {
+    return this.http.get<ISupplier[]>(API_SUPPLIERS);
   }
 
   getById(id: string): Observable<ISupplier> {
