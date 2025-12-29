@@ -15,6 +15,13 @@ export interface IProduct {
   updatedAt: string;
 }
 
+export interface IProductListResponse {
+  limit: number;
+  offset: number;
+  products: IProduct[];
+  totalRecords: number;
+}
+
 export interface ICreateProductForm {
   name: FormControl<string>;
   description: FormControl<string>;

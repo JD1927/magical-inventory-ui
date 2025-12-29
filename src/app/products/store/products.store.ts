@@ -3,13 +3,13 @@ import type { IPaginationDto } from '@common/models/pagination.model';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
-import type { IProduct } from '@products/models/product.model';
+import type { IProductListResponse } from '@products/models/product.model';
 import { PAGE_LIMIT, ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { getAllProductsApiEvents } from './events/product-api-events';
 
 interface ProductsState {
-  products: IProduct[];
+  productListResponse: IProductListResponse;
   loading: boolean;
   successMessage: string | null;
   errorMessage: string | null;
@@ -17,7 +17,12 @@ interface ProductsState {
 }
 
 const initialState: ProductsState = {
-  products: [],
+  productListResponse: {
+    limit: 0,
+    offset: 0,
+    products: [],
+    totalRecords: 0,
+  },
   loading: false,
   successMessage: null,
   errorMessage: null,
@@ -34,9 +39,14 @@ export const ProductsStore = signalStore(
       errorMessage: null,
       successMessage: null,
     })),
-    on(getAllProductsApiEvents.loadedSuccess, ({ payload: products }, state) => ({
+    on(getAllProductsApiEvents.loadedSuccess, ({ payload: response }, state) => ({
       ...state,
-      products,
+      productListResponse: {
+        limit: response.limit,
+        offset: response.offset,
+        products: response.products,
+        totalRecords: response.totalRecords,
+      },
       loading: false,
       errorMessage: null,
       successMessage: 'Products loaded successfully',
@@ -49,17 +59,17 @@ export const ProductsStore = signalStore(
     })),
   ),
   withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
-    load$: events.on(getAllProductsApiEvents.load).pipe(
+    loadProducts$: events.on(getAllProductsApiEvents.load).pipe(
       switchMap(() => {
         const pagination = state.pagination();
         const limit = pagination?.limit ?? PAGE_LIMIT;
         const offset = pagination?.offset ?? 0;
-        return service.getAll(limit, offset).pipe(
+        return service.getAllWithParams(limit, offset).pipe(
           mapResponse({
             next: (products) => getAllProductsApiEvents.loadedSuccess(products),
             error: (error: { message: string; statusCode: number }) =>
               getAllProductsApiEvents.loadedFailure(
-                error.message ?? 'Could not perform product deletion',
+                error.message ?? 'Could not perform product loading',
               ),
           }),
         );

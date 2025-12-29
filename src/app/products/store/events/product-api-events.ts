@@ -1,4 +1,8 @@
-import type { ICreateProductDto, IProduct } from '@products/models/product.model';
+import type {
+  ICreateProductDto,
+  IProduct,
+  IProductListResponse,
+} from '@products/models/product.model';
 import { type } from '@ngrx/signals';
 import { eventGroup } from '@ngrx/signals/events';
 
@@ -6,7 +10,7 @@ export const getAllProductsApiEvents = eventGroup({
   source: 'Get All Products API',
   events: {
     load: type<void>(),
-    loadedSuccess: type<IProduct[]>(),
+    loadedSuccess: type<IProductListResponse>(),
     loadedFailure: type<string>(),
   },
 });
