@@ -18,3 +18,8 @@
 html, body {
   font-family: var(--font-family);
 }
+
+.page-content {
+  height: calc(100dvh - 320px);
+  overflow: auto;
+}

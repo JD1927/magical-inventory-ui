@@ -8,15 +8,17 @@ import { RippleModule } from 'primeng/ripple';
   selector: 'app-dashboard-layout',
   imports: [CommonModule, RippleModule, MenuBar, RouterOutlet, BreadcrumbComponent],
   template: `
-    <main class="flex flex-col h-screen">
-      <nav class="fixed w-full z-100">
+    <main class="flex flex-col h-dvh scroll-smooth">
+      <nav class="w-full">
         <app-menu-bar />
       </nav>
-      <section class="flex-grow pt-22 px-10 pb-16 overflow-auto">
+      <section class="flex-grow pt-4 px-10 pb-16">
         <div class="-ml-4">
           <app-breadcrumb />
         </div>
-        <router-outlet />
+        <div>
+          <router-outlet />
+        </div>
       </section>
     </main>
   `,
