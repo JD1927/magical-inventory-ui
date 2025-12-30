@@ -1,10 +1,12 @@
 import { Validators, type FormControl } from '@angular/forms';
+import type { EOrderBy } from '@common/models/pagination.model';
 import type { IProduct } from '@products/models/product.model';
 import type { ISupplier } from '@suppliers/models/supplier.model';
 
 export enum EMovementType {
   IN = 'IN',
   OUT = 'OUT',
+  ALL = 'ALL',
 }
 
 export interface IInventoryRecord {
@@ -29,6 +31,25 @@ export interface ICreateOutInventoryMovementDto {
   quantity: number;
   discountPercent: number | null;
   supplierId: string | null;
+}
+
+export interface IInventoryMovementQueryDto {
+  productId: string;
+  orderBy?: EOrderBy;
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+  offset?: number;
+  type?: EMovementType;
+}
+
+export interface IInventoryMovementsResponse {
+  startDate: string | null;
+  endDate: string | null;
+  limit: number;
+  offset: number;
+  totalRecords: number;
+  movements: IInventoryMovement[];
 }
 
 export interface IInventoryMovement {

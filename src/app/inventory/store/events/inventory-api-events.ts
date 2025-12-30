@@ -2,7 +2,8 @@ import type {
   ICreateInInventoryMovementDto,
   ICreateInventoryMovementResult,
   ICreateOutInventoryMovementDto,
-  IInventoryMovement,
+  IInventoryMovementQueryDto,
+  IInventoryMovementsResponse,
   IInventoryRecord,
 } from '@inventory/models/inventory.model';
 import { type } from '@ngrx/signals';
@@ -20,8 +21,8 @@ export const getAllInventoryRecordsApiEvents = eventGroup({
 export const getAllInventoryMovementsApiEvents = eventGroup({
   source: 'Get All Inventory Movements API',
   events: {
-    load: type<void>(),
-    loadedSuccess: type<IInventoryMovement[]>(),
+    load: type<IInventoryMovementQueryDto>(),
+    loadedSuccess: type<IInventoryMovementsResponse>(),
     loadedFailure: type<string>(),
   },
 });

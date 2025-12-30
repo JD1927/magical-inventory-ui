@@ -1,12 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 import type {
   ICreateInInventoryMovementDto,
   ICreateInventoryMovementResult,
   ICreateOutInventoryMovementDto,
-  IInventoryRecord,
   IInventoryMovement,
+  IInventoryMovementQueryDto,
+  IInventoryMovementsResponse,
+  IInventoryRecord,
 } from '@inventory/models/inventory.model';
 import type { Observable } from 'rxjs';
 
@@ -26,8 +28,12 @@ export class InventoryService {
     return this.http.get<IInventoryRecord[]>(API_INVENTORY);
   }
 
-  getAllInventoryMovements(): Observable<IInventoryMovement[]> {
-    return this.http.get<IInventoryMovement[]>(`${API_INVENTORY}/movements`);
+  getAllInventoryMovements(
+    queryDto: IInventoryMovementQueryDto,
+  ): Observable<IInventoryMovementsResponse> {
+    return this.http.get<IInventoryMovementsResponse>(`${API_INVENTORY}/movements`, {
+      params: this.getProductMovementsParams(queryDto),
+    });
   }
 
   createInMovement(dto: ICreateInInventoryMovementDto): Observable<ICreateInventoryMovementResult> {
@@ -54,5 +60,18 @@ export class InventoryService {
 
   undoMovementById(id: string): Observable<IInventoryMovement> {
     return this.http.delete<IInventoryMovement>(`${API_INVENTORY}/movement/${id}`);
+  }
+
+  private getProductMovementsParams(dto: IInventoryMovementQueryDto) {
+    let params = new HttpParams();
+    params = params.set('productId', dto.productId);
+    if (dto.startDate) params = params.set('startDate', dto.startDate);
+    if (dto.endDate) params = params.set('endDate', dto.endDate);
+    if (dto.type) params = params.set('type', dto.type);
+    if (dto.orderBy) params = params.set('orderBy', dto.orderBy);
+    if (dto.limit || dto.limit === 0) params = params.set('limit', dto.limit);
+    if (dto.offset || dto.offset === 0) params = params.set('offset', dto.offset);
+
+    return params;
   }
 }

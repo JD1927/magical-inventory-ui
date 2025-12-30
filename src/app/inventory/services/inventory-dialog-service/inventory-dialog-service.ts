@@ -13,7 +13,9 @@ export class InventoryDialogService {
   openDialog(): DynamicDialogRef<InventoryMovementForm> | null {
     this.dialogRef = this.dialogService.open(InventoryMovementForm, {
       modal: true,
+      draggable: false,
       header: 'Add Inventory Movement',
+      inputValues: { isCalledFromDialog: true },
       width: '50%',
       baseZIndex: 10000,
       breakpoints: { '960px': '70%', '640px': '100%' },
