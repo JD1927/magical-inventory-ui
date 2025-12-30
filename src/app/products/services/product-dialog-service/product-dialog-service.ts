@@ -13,6 +13,7 @@ export class ProductDialogService {
   openDialog(productId?: string): DynamicDialogRef<ProductForm> | null {
     this.dialogRef = this.dialogService.open(ProductForm, {
       modal: true,
+      draggable: false,
       header: productId ? 'Edit Product' : 'Create Product',
       width: '50%',
       inputValues: { productId },

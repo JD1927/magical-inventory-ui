@@ -4,6 +4,7 @@ import type { ICategory } from '@categories/models/category.model';
 export interface IProduct {
   id: string;
   name: string;
+  sku: string;
   description?: string;
   salePrice: number;
   currentPurchasePrice: number;

@@ -7,19 +7,23 @@ import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductDialogService } from '@products/services';
 import { ButtonModule } from 'primeng/button';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-products-page',
-  imports: [RouterOutlet, PageHeader, ButtonModule, DynamicDialogModule],
+  imports: [RouterOutlet, PageHeader, ButtonModule, DynamicDialogModule, TooltipModule],
   providers: [ProductDialogService, DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-page-header title="Products" description="Manage your product inventory">
       <div class="ml-auto flex gap-2">
-        <p-button label="New Product" icon="pi pi-plus" (onClick)="onNewProduct()" />
+        <button type="button" pButton (click)="onNewProduct()" pTooltip="New Product">
+          <i class="pi pi-plus" pButtonIcon></i>
+          <span class="hidden md:inline-block" pButtonLabel>New Product</span>
+        </button>
       </div>
     </app-page-header>
-    <div class="card">
+    <div class="card page-content">
       <router-outlet />
     </div>
   `,
