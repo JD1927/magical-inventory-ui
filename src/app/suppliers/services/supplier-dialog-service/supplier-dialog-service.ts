@@ -13,6 +13,7 @@ export class SupplierDialogService {
   openDialog(supplierId?: string): DynamicDialogRef<SupplierForm> | null {
     this.dialogRef = this.dialogService.open(SupplierForm, {
       modal: true,
+      draggable: false,
       header: supplierId ? 'Edit Supplier' : 'Create Supplier',
       width: '50%',
       inputValues: { supplierId },

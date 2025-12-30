@@ -6,20 +6,24 @@ import { createNewSupplierApiEvents, getAllSuppliersApiEvents } from '@app/suppl
 import { PageHeader } from '@common/components';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { SupplierDialogService } from '@suppliers/services';
-import { Button } from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-suppliers-page',
-  imports: [CommonModule, RouterOutlet, PageHeader, Button],
+  imports: [CommonModule, RouterOutlet, PageHeader, ButtonModule, TooltipModule],
   providers: [SupplierDialogService, DialogService],
   template: `
     <app-page-header title="Suppliers" description="Manage your own suppliers">
       <div class="ml-auto flex gap-2">
-        <p-button label="New Supplier" icon="pi pi-plus" (onClick)="onNewSupplier()" />
+        <button type="button" pButton (click)="onNewSupplier()" pTooltip="New Supplier">
+          <i class="pi pi-plus" pButtonIcon></i>
+          <span class="hidden md:inline-block" pButtonLabel>New Supplier</span>
+        </button>
       </div>
     </app-page-header>
-    <div class="card">
+    <div class="card page-content">
       <router-outlet />
     </div>
   `,
@@ -41,8 +45,9 @@ export class SuppliersPage {
     this.events
       .on(createNewSupplierApiEvents.createdSuccess)
       .pipe(takeUntilDestroyed())
-      .subscribe(() => {
+      .subscribe(({ payload }) => {
         // Refresh supplier list
+        console.log('🚀 ~ SuppliersPage ~ listenToCreationEvents ~ payload:', payload);
         this.dispatcher.dispatch(getAllSuppliersApiEvents.load());
         this.supplierDialogService.closeDialog();
       });
