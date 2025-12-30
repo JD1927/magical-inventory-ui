@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormValidations } from '@common/utils';
@@ -23,10 +23,12 @@ import {
   CreateInventoryMovementStore,
   createNewInInventoryMovementApiEvents,
   createNewOutInventoryMovementApiEvents,
+  getAllInventoryRecordsApiEvents,
   InventoryStore,
 } from '@inventory/store';
 import { Dispatcher } from '@ngrx/signals/events';
-import { SuppliersStore } from '@suppliers/store';
+import { ProductsStore } from '@products/store';
+import { getAllSuppliersApiEvents, SuppliersStore } from '@suppliers/store';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -39,7 +41,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 
 @Component({
-  selector: 'app-in-inventory-movement-form',
+  selector: 'app-inventory-movement-form',
   imports: [
     ButtonModule,
     CommonModule,
@@ -58,18 +60,24 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
   styleUrl: './inventory-movement-form.css',
 })
 export class InventoryMovementForm {
+  isCalledFromDialog = input<boolean>(false);
   inventoryMovementForm!: FormGroup<ICreateInventoryMovementForm>;
   formValidations = inject(FormValidations);
+  productStore = inject(ProductsStore);
   inventoryStore = inject(InventoryStore);
   supplierStore = inject(SuppliersStore);
   createInventoryMovementStore = inject(CreateInventoryMovementStore);
   // Map Inventory Records to Products using the Product property
   dispatcher = inject(Dispatcher);
-  products = computed(() =>
-    this.inventoryStore
+  products = computed(() => {
+    if (this.inventoryStore.inventoryRecords().length === 0) {
+      this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
+      return;
+    }
+    return this.inventoryStore
       .inventoryRecords()
-      .map((record: IInventoryRecord) => ({ ...record, ...record.product })),
-  );
+      .map((record: IInventoryRecord) => ({ ...record, ...record.product }));
+  });
   movementType = EMovementType.IN;
   options: any[] = [
     { label: EMovementType.IN.toString(), value: EMovementType.IN },
@@ -77,11 +85,19 @@ export class InventoryMovementForm {
   ];
 
   // Form Builder
-  private fb: FormBuilder = inject(FormBuilder);
-  private dialogRef = inject(DynamicDialogRef<InventoryMovementForm>);
+  private readonly fb: FormBuilder = inject(FormBuilder);
+  private readonly dialogRef = inject<DynamicDialogRef<InventoryMovementForm>>(DynamicDialogRef, {
+    optional: true,
+  });
 
   constructor() {
     this.initializeMovementForm();
+    if (!this.isCalledFromDialog()) {
+      this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
+    }
+    if (this.supplierStore.suppliers().length === 0) {
+      this.dispatcher.dispatch(getAllSuppliersApiEvents.load());
+    }
   }
 
   private initializeMovementForm(): void {

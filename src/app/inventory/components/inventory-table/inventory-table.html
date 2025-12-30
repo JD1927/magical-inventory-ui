@@ -2,7 +2,7 @@
   [size]="'large'">
   <ng-template #header>
     <tr>
-      <th>Inventory Record ID</th>
+      <th>Product SKU</th>
       <th>Product Name</th>
       <th>Stock</th>
       <th>Average Cost</th>
@@ -12,7 +12,7 @@
   </ng-template>
   <ng-template #body let-record>
     <tr>
-      <td>{{ record.id | truncate: 8 : ' ' }}</td>
+      <td>{{ record.product.sku }}</td>
       <td>{{ record.product.name }}</td>
       <td>{{ record.stock }}</td>
       <td>{{ record.averageCost | currency }}</td>

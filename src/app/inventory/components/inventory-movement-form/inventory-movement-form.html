@@ -6,7 +6,7 @@
   <div class="mb-4">
     <p-floatlabel>
       <p-select id="productId" formControlName="productId" [options]="products()" [invalid]="isInvalid('productId')"
-        [filter]="true" optionLabel="name" optionValue="id" placeholder="Select a Product" class="w-full">
+        [filter]="true" optionLabel="name" optionValue="id" placeholder="Select a Product" fluid>
         <ng-template let-product #item>
           <div class="flex items-center gap-2">
             <i class="pi pi-warehouse" style="color: var(--primary-color)"></i>
@@ -23,7 +23,7 @@
 
   <div class="mb-4">
     <p-floatlabel>
-      <p-inputnumber id="quantity" class="w-full" formControlName="quantity" mode="decimal" [showButtons]="true"
+      <p-inputnumber id="quantity" fluid formControlName="quantity" mode="decimal" [showButtons]="true"
         inputId="quantity-minmax-buttons" [min]="1" [step]="5" />
       <label for="quantity">Quantity</label>
     </p-floatlabel>
@@ -36,7 +36,7 @@
   @if (movementType === 'IN') {
   <div class="mb-4">
     <p-floatlabel>
-      <p-inputnumber id="purchasePrice" class="w-full" formControlName="purchasePrice" mode="decimal" prefix="$ "
+      <p-inputnumber id="purchasePrice" fluid formControlName="purchasePrice" mode="decimal" prefix="$ "
         [showButtons]="true" [step]="500" inputId="purchase-price-buttons" [min]="1" />
       <label for="purchasePrice">Purchase Price</label>
     </p-floatlabel>
@@ -49,7 +49,7 @@
 
   <div class="mb-4">
     <p-floatlabel>
-      <p-inputnumber id="profitMarginPercentage" class="w-full" formControlName="profitMarginPercentage" mode="decimal"
+      <p-inputnumber id="profitMarginPercentage" fluid formControlName="profitMarginPercentage" mode="decimal"
         suffix=" %" [showButtons]="true" [step]="10" inputId="profit-margin-percentage-minmax-buttons" [min]="100"
         [max]="300" />
       <label for="profitMarginPercentage">Profit Margin Percentage (100-300%)</label>
@@ -63,7 +63,7 @@
 
   <div class="mb-4">
     <p-floatlabel>
-      <p-inputnumber id="salePrice" class="w-full" formControlName="salePrice" mode="decimal" prefix="$ "
+      <p-inputnumber id="salePrice" fluid formControlName="salePrice" mode="decimal" prefix="$ "
         inputId="sale-price-minmax-buttons" [min]="1" />
       <label for="salePrice">Sale Price</label>
     </p-floatlabel>
@@ -78,7 +78,7 @@
     <p-floatlabel>
       <p-select id="supplierId" formControlName="supplierId" [options]="supplierStore.suppliers()"
         [invalid]="isInvalid('supplierId')" optionLabel="name" optionValue="id" placeholder="Select a Supplier"
-        class="w-full">
+        [loading]="supplierStore.loading()" fluid>
         <ng-template let-supplier #item>
           <div class="flex items-center gap-2">
             <i class="pi pi-store" style="color: var(--primary-color)"></i>
@@ -94,7 +94,7 @@
   } @else {
   <div class="mb-4">
     <p-floatlabel>
-      <p-inputnumber id="discountPercent" class="w-full" formControlName="discountPercent" mode="decimal" suffix=" %"
+      <p-inputnumber id="discountPercent" fluid formControlName="discountPercent" mode="decimal" suffix=" %"
         [showButtons]="true" [step]="10" inputId="discount-percent-minmax-buttons" [min]="0" [max]="100" />
       <label for="discountPercent">Discount Percentage (0-100%)</label>
     </p-floatlabel>
@@ -106,8 +106,11 @@
   </div>
   }
 
-  <div class="mt-8 flex justify-end gap-2">
+  <div class="flex justify-end gap-2">
+    @if (this.isCalledFromDialog()) {
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [loading]="createInventoryMovementStore.loading()" />
+    }
+    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!inventoryMovementForm.valid"
+      [loading]="createInventoryMovementStore.loading()" />
   </div>
 </form>

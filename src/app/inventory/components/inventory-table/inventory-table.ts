@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import { TruncatePipe } from '@common/pipes';
 import type { IInventoryRecord } from '@inventory/models/inventory.model';
 import { Button } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
@@ -9,7 +8,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-inventory-table',
-  imports: [CommonModule, TableModule, TruncatePipe, TooltipModule, Button, MenuModule],
+  imports: [CommonModule, TableModule, TooltipModule, Button, MenuModule],
   templateUrl: './inventory-table.html',
   styleUrl: './inventory-table.css',
 })
