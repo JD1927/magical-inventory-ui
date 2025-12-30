@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CategoriesTable, CategoryForm } from '@categories/components';
+import { CategoriesTable } from '@categories/components';
 import {
   CategoriesStore,
   DeleteCategoryStore,
@@ -9,11 +9,10 @@ import {
   getAllCategoriesApiEvents,
 } from '@categories/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
-import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-category-list-page',
-  imports: [CommonModule, CategoriesTable, CategoryForm, Card],
+  imports: [CommonModule, CategoriesTable],
   templateUrl: './category-list-page.html',
   styleUrl: './category-list-page.css',
 })

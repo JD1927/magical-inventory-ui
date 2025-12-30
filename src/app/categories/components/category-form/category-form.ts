@@ -12,6 +12,7 @@ import {
 import { FormValidations } from '@common/utils';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ButtonModule } from 'primeng/button';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabel } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -49,6 +50,7 @@ export class CategoryForm {
   createCategoryStore = inject(CreateCategoryStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
+  dialogRef = inject(DynamicDialogRef<CategoryForm>);
   // Form Builder
   private fb: FormBuilder = inject(FormBuilder);
 
@@ -118,5 +120,10 @@ export class CategoryForm {
       );
     }
     this.categoryForm.reset();
+  }
+
+  onCancel(): void {
+    if (!this.dialogRef) return;
+    this.dialogRef.close();
   }
 }
