@@ -19,6 +19,14 @@ html, body {
   font-family: var(--font-family);
 }
 
+body {
+  /* Use the variable you defined in the preset */
+  background-color: var(--p-surface-ground);
+
+  /* Optional: Ensure text color is also bound to the theme */
+  color: var(--p-text-color);
+}
+
 .page-content {
   height: calc(100dvh - 320px);
   overflow: auto;

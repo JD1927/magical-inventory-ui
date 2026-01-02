@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { ColorSchemeService } from '@app/common/utils/color-scheme/color-scheme';
 import { PrimeIcons, type MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { Button } from 'primeng/button';
@@ -17,10 +18,10 @@ import { MenubarModule } from 'primeng/menubar';
         <ng-template #end>
           <p-button
             class="mr-4"
-            [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+            [icon]="colorSchemeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
             [text]="true"
             aria-label="Toggle color scheme"
-            (click)="onToggleDarkMode()"
+            (click)="colorSchemeService.onToggleDarkMode()"
           />
           <p-avatar label="M" class="mr-2" shape="circle" />
         </ng-template>
@@ -30,14 +31,7 @@ import { MenubarModule } from 'primeng/menubar';
 })
 export class MenuBar {
   menuItems = signal<MenuItem[]>(TOP_BAR_MENU_ITEMS);
-  isDarkMode = signal<boolean>(true);
-
-  onToggleDarkMode(): void {
-    const element = document.querySelector('html');
-    if (!element) return;
-    element.classList.toggle('magical-inventory-ui-dark');
-    this.isDarkMode.update((value) => !value);
-  }
+  colorSchemeService = inject(ColorSchemeService);
 }
 
 export const TOP_BAR_MENU_ITEMS: MenuItem[] = [
@@ -70,5 +64,6 @@ export const TOP_BAR_MENU_ITEMS: MenuItem[] = [
     label: 'Inventory',
     icon: PrimeIcons.WAREHOUSE,
     routerLink: '/dashboard/inventory',
+    iconClass: 'text-(--p-primary-400)',
   },
 ];

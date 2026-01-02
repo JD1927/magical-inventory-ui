@@ -5,7 +5,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { APP_ROUTES } from './app.routes';
-import { Noir } from './preset.prime';
+import { EmeraldStaleKindi } from './preset.prime';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     providePrimeNG({
       theme: {
-        preset: Noir,
+        preset: EmeraldStaleKindi,
         options: {
           darkModeSelector: '.magical-inventory-ui-dark',
           zIndex: {},
