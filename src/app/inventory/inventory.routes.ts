@@ -15,7 +15,7 @@ export const ROUTES: Routes = [
           ),
       },
       {
-        path: 'movements/product/:productId',
+        path: 'movements/product',
         data: { label: 'Inventory Movements' },
         loadComponent: () =>
           import('./pages/inventory-movements-page/inventory-movements-page').then(

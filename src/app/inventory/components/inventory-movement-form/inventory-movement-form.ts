@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import type { OnInit } from '@angular/core';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormValidations } from '@common/utils';
@@ -59,16 +60,21 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
   templateUrl: './inventory-movement-form.html',
   styleUrl: './inventory-movement-form.css',
 })
-export class InventoryMovementForm {
+export class InventoryMovementForm implements OnInit {
+  // Inputs
+  currentProductId = input<string | null>(null);
   isCalledFromDialog = input<boolean>(false);
-  inventoryMovementForm!: FormGroup<ICreateInventoryMovementForm>;
+  // Outputs
+  productSelectionChange = output<string>();
+  // Dependencies
   formValidations = inject(FormValidations);
   productStore = inject(ProductsStore);
   inventoryStore = inject(InventoryStore);
   supplierStore = inject(SuppliersStore);
   createInventoryMovementStore = inject(CreateInventoryMovementStore);
-  // Map Inventory Records to Products using the Product property
   dispatcher = inject(Dispatcher);
+  // Map Inventory Records to Products using the Product property
+  inventoryMovementForm!: FormGroup<ICreateInventoryMovementForm>;
   products = computed(() => {
     if (this.inventoryStore.inventoryRecords().length === 0) {
       this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
@@ -91,6 +97,14 @@ export class InventoryMovementForm {
   });
 
   constructor() {
+    effect(() => {
+      const productId: string | null = this.currentProductId();
+      if (!productId) return;
+      this.inventoryMovementForm.controls['productId'].setValue(productId);
+    });
+  }
+
+  ngOnInit(): void {
     this.initializeMovementForm();
     if (!this.isCalledFromDialog()) {
       this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
@@ -102,7 +116,7 @@ export class InventoryMovementForm {
 
   private initializeMovementForm(): void {
     this.inventoryMovementForm = this.fb.group({
-      productId: new FormControl<string>('', {
+      productId: new FormControl<string>(this.currentProductId() ?? '', {
         nonNullable: true,
         validators: PRODUCT_ID_VALIDATORS,
       }),
@@ -216,6 +230,10 @@ export class InventoryMovementForm {
       this.inventoryMovementForm.controls['discountPercent'].updateValueAndValidity();
     }
     this.inventoryMovementForm.updateValueAndValidity();
+  }
+
+  onProductSelectionChange(productId: string): void {
+    this.productSelectionChange.emit(productId);
   }
 
   isInvalid(controlName: string): boolean {

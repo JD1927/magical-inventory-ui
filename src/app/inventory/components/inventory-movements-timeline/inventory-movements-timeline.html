@@ -1,25 +1,56 @@
 <div class="mb-4">
+  @if (currentProductId() && inventoryMovementsResponse().movements.length > 0) {
   <p-timeline [value]="inventoryMovementsResponse().movements" align="alternate" class="customized-timeline">
     <ng-template #marker let-event>
       <div class="flex items-center justify-center text-white rounded-full z-10 shadow-sm my-2">
-        <p-button [icon]="event.type === 'IN' ? 'pi pi-cart-plus' : 'pi pi-cart-minus'" [rounded]="true"
-          [severity]="event.type === 'IN' ? 'success' : 'danger'" [raised]="true" />
+        @let iconType = event?.type === 'IN' ? 'pi pi-cart-plus' : 'pi pi-cart-minus';
+        <p-button [icon]="iconType" [rounded]="true" [severity]="event?.type === 'IN' ? 'success' : 'danger'"
+          [raised]="true" />
       </div>
     </ng-template>
     <ng-template #content let-event>
-      <p-card>
-        <div>
-          <p class="italic">{{ (event?.createdAt | date: 'mediumDate') || '' }}</p>
-          <p><strong>Quantity: </strong> {{ event?.quantity }}</p>
-          <p-tag class="inline" icon="pi pi-check" severity="success" pTooltip="Purchase price"
-            [value]="(event?.purchasePrice | currency) || ''" />
+      <p-card
+        [style]="{ backgroundColor: colorSchemeService.isDarkMode() ? 'var(--p-surface-800)' : 'var(--p-surface-0)' }">
+        @let isInMovement = event?.type === 'IN';
+        @let movementType = isInMovement ? 'INBOUND' : 'OUTBOUND';
+        @let iconType = isInMovement ? 'pi pi-cart-plus' : 'pi pi-cart-minus';
+        @let severity = isInMovement ? 'success' : 'danger';
+        @let movementTooltip = isInMovement ? 'Purchase price' : 'Sale price';
+        @let amount = isInMovement ? event?.purchasePrice : event?.salePrice;
+        <div class="flex justify-between items-start mb-2">
+          <div class="flex flex-col items-start">
+            <p-tag [icon]="iconType" [severity]="severity" [value]="movementType" />
+            <p class="text-lg font-medium">{{ event.product?.name }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400">{{ (event?.createdAt | date: 'mediumDate') || '' }}</p>
+          </div>
+          <div class="flex flex-col items-end">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Value</p>
+            <p-tag class="inline" severity="success" [pTooltip]="movementTooltip" [value]="(amount | currency) || ''" />
+          </div>
+        </div>
+        <p-divider />
+        <div class="flex justify-between items-start mb-2">
+          <div class="flex flex-col items-start">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Quantity</p>
+            <p class="text-lg font-medium">{{ event?.quantity }}</p>
+          </div>
+          @if (isInMovement) {
+          <div class="flex flex-col items-end">
+            <p class="text-sm text-gray-600 dark:text-gray-400">Supplier</p>
+            <p class="text-sm font-medium">{{ event?.supplier?.name }}</p>
+          </div>
+          }
         </div>
       </p-card>
     </ng-template>
   </p-timeline>
-</div>
-<div class="flex justify-center">
-  @let movementsSize = inventoryMovementsResponse().movements.length;
-  @let totalRecords = inventoryMovementsResponse().totalRecords;
-  @if (totalRecords > movementsSize) { <p-button label="Load more" [text]="true" /> }
+  } @else {
+  <div class="flex flex-1 flex-col items-center justify-start py-12 text-center w-full">
+    <p-avatar icon="pi pi-sparkles text-(--p-primary-400)" size="xlarge" shape="circle" />
+    <h3 class="mb-2 text-xl font-bold">Select a Product</h3>
+    <p class="mb-8 text-sm text-gray-600 dark:text-gray-400">
+      View inventory history and record new movements by selecting a product from the list in the form.
+    </p>
+  </div>
+  }
 </div>

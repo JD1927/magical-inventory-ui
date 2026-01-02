@@ -1,71 +1,118 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
-import type { IProduct } from '@products/models/product.model';
-import { InventoryMovementsTimeline, InventoryMovementForm } from '@inventory/components';
+import { ELimitSettings } from '@app/common/models/pagination.model';
+import { InventoryMovementForm, InventoryMovementsTimeline } from '@inventory/components';
+import type {
+  IInventoryMovement,
+  IInventoryMovementsResponse,
+} from '@inventory/models/inventory.model';
 import { EMovementType, type IInventoryMovementQueryDto } from '@inventory/models/inventory.model';
-import { getAllInventoryMovementsApiEvents, InventoryStore } from '@inventory/store';
+import {
+  createNewInInventoryMovementApiEvents,
+  createNewOutInventoryMovementApiEvents,
+  getAllInventoryMovementsApiEvents,
+  InventoryStore,
+} from '@inventory/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-inventory-movements-page',
-  imports: [CommonModule, InventoryMovementsTimeline, CardModule, InventoryMovementForm],
-  template: `
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div class="col-span-1 lg:col-span-8 page-content">
-        <app-inventory-movements-timeline
-          [currentProduct]="currentProduct()"
-          [inventoryMovementsResponse]="inventoryStore.inventoryMovementsResponse()"
-        />
-      </div>
-      <div class="hidden lg:block col-span-1 lg:col-span-4">
-        <p-card header="Record Movement">
-          <app-inventory-movement-form [isCalledFromDialog]="false" />
-        </p-card>
-      </div>
-    </div>
+  imports: [
+    CommonModule,
+    InventoryMovementsTimeline,
+    CardModule,
+    InventoryMovementForm,
+    ButtonModule,
+  ],
+  templateUrl: './inventory-movements-page.html',
+  styles: `
+    .inventory-movements-timeline {
+      height: calc(100dvh - 390px);
+      overflow: auto;
+    }
+    .load-more {
+      position: absolute;
+      bottom: 0;
+      left: calc(50% - 75px);
+    }
   `,
 })
 export class InventoryMovementsPage {
+  // Dependencies
   inventoryStore = inject(InventoryStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
-  activatedRoute = inject(ActivatedRoute);
-  currentProduct = signal<IProduct | null>(null);
-  movementQueryDto = signal<IInventoryMovementQueryDto>({
-    productId: '',
-    startDate: undefined,
-    endDate: undefined,
-    type: EMovementType.ALL,
-    limit: undefined,
-    offset: undefined,
-    orderBy: undefined,
-  });
+  // Signals
+  movementQueryDto = signal<IInventoryMovementQueryDto>(INITIAL_MOVEMENT_QUERY_DTO);
+  // Computed signals
+  currentProductId = computed<string | null>(() => this.inventoryStore.selectedProductId());
+  inventoryMovementsResponse = computed<IInventoryMovementsResponse>(() =>
+    this.inventoryStore.inventoryMovementsResponse(),
+  );
 
   constructor() {
-    this.activatedRoute.paramMap.subscribe((params) => {
-      const productId: string | null = params.get('productId');
-      if (!productId) return;
-      this.movementQueryDto.update((state) => ({ ...state, productId }));
+    this.listenToInventoryEvents();
+    effect(() => {
+      const productId: string | null = this.currentProductId();
+      if (!productId || this.movementQueryDto().productId === productId) return;
+      this.movementQueryDto.set({ ...INITIAL_MOVEMENT_QUERY_DTO, productId });
       this.loadMovementsByQuery();
     });
-    this.listenToInventoryMovementEvents();
   }
 
-  listenToInventoryMovementEvents() {
+  listenToInventoryEvents() {
+    this.listenToCreateMovementEvents();
+  }
+
+  private listenToCreateMovementEvents() {
     this.events
-      .on(getAllInventoryMovementsApiEvents.loadedSuccess)
+      .on(
+        createNewInInventoryMovementApiEvents.createdSuccess,
+        createNewOutInventoryMovementApiEvents.createdSuccess,
+      )
       .pipe(takeUntilDestroyed())
-      .subscribe(({ payload }) => {
-        const { movements } = payload;
-        this.currentProduct.set(movements.length ? movements[0].product : null);
-        // Handle success if needed
+      .subscribe(() => {
+        // Refresh inventory movements AFTER a new movement is created
+        this.movementQueryDto.update((state) => ({
+          ...INITIAL_MOVEMENT_QUERY_DTO,
+          productId: state.productId,
+        }));
+        this.loadMovementsByQuery();
       });
   }
 
   loadMovementsByQuery() {
     this.dispatcher.dispatch(getAllInventoryMovementsApiEvents.load(this.movementQueryDto()));
   }
+
+  onLoadMore() {
+    const totalRecords: number = this.inventoryStore.inventoryMovementsResponse().totalRecords;
+    const currentMovements: IInventoryMovement[] =
+      this.inventoryStore.inventoryMovementsResponse().movements;
+    if (currentMovements.length >= totalRecords) return;
+    this.movementQueryDto.update((state) => ({
+      ...state,
+      offset: (state.offset || 0) + (state.limit || ELimitSettings.DEFAULT),
+      loadMore: true,
+    }));
+    this.loadMovementsByQuery();
+  }
+
+  onProductSelectionChange(productId: string): void {
+    this.dispatcher.dispatch(getAllInventoryMovementsApiEvents.selectedProductId(productId));
+  }
 }
+
+export const INITIAL_MOVEMENT_QUERY_DTO: IInventoryMovementQueryDto = {
+  productId: '',
+  startDate: undefined,
+  endDate: undefined,
+  type: EMovementType.ALL,
+  limit: ELimitSettings.DEFAULT,
+  offset: 0,
+  orderBy: undefined,
+  loadMore: false,
+};

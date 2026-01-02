@@ -6,7 +6,8 @@
   <div class="mb-4">
     <p-floatlabel>
       <p-select id="productId" formControlName="productId" [options]="products()" [invalid]="isInvalid('productId')"
-        [filter]="true" optionLabel="name" optionValue="id" placeholder="Select a Product" fluid>
+        (onChange)="onProductSelectionChange($event.value)" [filter]="true" optionLabel="name" optionValue="id"
+        placeholder="Select a Product" fluid>
         <ng-template let-product #item>
           <div class="flex items-center gap-2">
             <i class="pi pi-warehouse" style="color: var(--primary-color)"></i>

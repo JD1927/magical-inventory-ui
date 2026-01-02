@@ -3,7 +3,11 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { InventoryDialogService } from '@app/inventory/services';
 import { InventoryTable } from '@inventory/components';
-import { getAllInventoryRecordsApiEvents, InventoryStore } from '@inventory/store';
+import {
+  getAllInventoryMovementsApiEvents,
+  getAllInventoryRecordsApiEvents,
+  InventoryStore,
+} from '@inventory/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -44,8 +48,8 @@ export class InventoryListPage {
   }
 
   async onViewProductMovements(productId: string) {
-    // Handle viewing product movements for the given inventory record ID
-    await this.router.navigate(['/dashboard/inventory/movements/product/', productId]);
+    this.dispatcher.dispatch(getAllInventoryMovementsApiEvents.selectedProductId(productId));
+    await this.router.navigate(['/dashboard/inventory/movements/product/']);
   }
 
   onAddInventoryMovement(): void {
