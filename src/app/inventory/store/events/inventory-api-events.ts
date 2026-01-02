@@ -21,6 +21,7 @@ export const getAllInventoryRecordsApiEvents = eventGroup({
 export const getAllInventoryMovementsApiEvents = eventGroup({
   source: 'Get All Inventory Movements API',
   events: {
+    selectedProductId: type<string>(),
     load: type<IInventoryMovementQueryDto>(),
     loadedSuccess: type<IInventoryMovementsResponse>(),
     loadedFailure: type<string>(),

@@ -41,9 +41,11 @@ export interface IInventoryMovementQueryDto {
   limit?: number;
   offset?: number;
   type?: EMovementType;
+  loadMore: boolean;
 }
 
 export interface IInventoryMovementsResponse {
+  productId: string;
   startDate: string | null;
   endDate: string | null;
   limit: number;

@@ -1,7 +1,8 @@
 import { inject } from '@angular/core';
-import type {
-  IInventoryMovementsResponse,
-  IInventoryRecord,
+import {
+  type IInventoryMovement,
+  type IInventoryMovementsResponse,
+  type IInventoryRecord,
 } from '@inventory/models/inventory.model';
 import { InventoryService } from '@inventory/services';
 import { mapResponse } from '@ngrx/operators';
@@ -25,6 +26,7 @@ interface InventoryState {
 const initialState: InventoryState = {
   inventoryRecords: [],
   inventoryMovementsResponse: {
+    productId: '',
     movements: [],
     totalRecords: 0,
     startDate: null,
@@ -42,16 +44,29 @@ export const InventoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withReducer(
-    on(
-      getAllInventoryRecordsApiEvents.load,
-      getAllInventoryMovementsApiEvents.load,
-      (_, state) => ({
+    on(getAllInventoryRecordsApiEvents.load, (_, state) => ({
+      ...state,
+      loading: true,
+      errorMessage: null,
+      successMessage: null,
+    })),
+    on(getAllInventoryMovementsApiEvents.load, ({ payload: query }, state) => {
+      const isLoadMore: boolean = query.loadMore;
+      console.log('🚀 ~ isLoadMore:', isLoadMore);
+      const inventoryMovementsResponse = isLoadMore
+        ? {
+            ...state.inventoryMovementsResponse,
+            movements: [...state.inventoryMovementsResponse.movements],
+          }
+        : { ...state.inventoryMovementsResponse, movements: [] };
+      return {
         ...state,
+        inventoryMovementsResponse,
         loading: true,
         errorMessage: null,
         successMessage: null,
-      }),
-    ),
+      };
+    }),
     on(getAllInventoryRecordsApiEvents.loadedSuccess, ({ payload }, state) => ({
       ...state,
       inventoryRecords: [...payload],
@@ -59,13 +74,24 @@ export const InventoryStore = signalStore(
       errorMessage: null,
       successMessage: 'Inventory records loaded successfully',
     })),
-    on(getAllInventoryMovementsApiEvents.loadedSuccess, ({ payload }, state) => ({
-      ...state,
-      inventoryMovementsResponse: { ...payload },
-      loading: false,
-      errorMessage: null,
-      successMessage: 'Inventory movements loaded successfully',
-    })),
+    on(getAllInventoryMovementsApiEvents.loadedSuccess, ({ payload }, state) => {
+      const currentProductId: string = state.inventoryMovementsResponse.productId;
+      const newProductId: string = payload.productId;
+      const movements: IInventoryMovement[] =
+        currentProductId === newProductId
+          ? [...state.inventoryMovementsResponse.movements, ...payload.movements]
+          : payload.movements;
+      return {
+        ...state,
+        inventoryMovementsResponse: {
+          ...payload,
+          movements,
+        },
+        loading: false,
+        errorMessage: null,
+        successMessage: 'Inventory movements loaded successfully',
+      };
+    }),
     on(
       getAllInventoryRecordsApiEvents.loadedFailure,
       getAllInventoryMovementsApiEvents.loadedFailure,
@@ -74,6 +100,13 @@ export const InventoryStore = signalStore(
         loading: false,
         errorMessage,
         successMessage: null,
+      }),
+    ),
+    on(
+      getAllInventoryMovementsApiEvents.selectedProductId,
+      ({ payload: selectedProductId }, state) => ({
+        ...state,
+        selectedProductId,
       }),
     ),
   ),

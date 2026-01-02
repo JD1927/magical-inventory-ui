@@ -31,8 +31,9 @@ export class InventoryService {
   getAllInventoryMovements(
     queryDto: IInventoryMovementQueryDto,
   ): Observable<IInventoryMovementsResponse> {
+    const params = this.getProductMovementsParams(queryDto);
     return this.http.get<IInventoryMovementsResponse>(`${API_INVENTORY}/movements`, {
-      params: this.getProductMovementsParams(queryDto),
+      params,
     });
   }
 
