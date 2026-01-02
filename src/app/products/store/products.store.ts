@@ -1,10 +1,10 @@
 import { inject } from '@angular/core';
-import type { IPaginationDto } from '@common/models/pagination.model';
+import { ELimitSettings, type IPaginationDto } from '@common/models/pagination.model';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import type { IProductListResponse } from '@products/models/product.model';
-import { PAGE_LIMIT, ProductService } from '@products/services';
+import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { getAllProductsApiEvents } from './events/product-api-events';
 
@@ -26,7 +26,7 @@ const initialState: ProductsState = {
   loading: false,
   successMessage: null,
   errorMessage: null,
-  pagination: { limit: PAGE_LIMIT, offset: 0 },
+  pagination: { limit: ELimitSettings.DEFAULT, offset: 0 },
 };
 
 export const ProductsStore = signalStore(
@@ -62,7 +62,7 @@ export const ProductsStore = signalStore(
     loadProducts$: events.on(getAllProductsApiEvents.load).pipe(
       switchMap(() => {
         const pagination = state.pagination();
-        const limit = pagination?.limit ?? PAGE_LIMIT;
+        const limit = pagination?.limit ?? ELimitSettings.DEFAULT;
         const offset = pagination?.offset ?? 0;
         return service.getAllWithParams(limit, offset).pipe(
           mapResponse({

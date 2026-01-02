@@ -10,7 +10,6 @@ import type {
 } from '@products/models/product.model';
 import type { Observable } from 'rxjs';
 
-export const PAGE_LIMIT = 15;
 const API_PRODUCTS = `${environment.apiUrl}/products`;
 
 @Injectable({

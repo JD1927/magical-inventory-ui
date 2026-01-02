@@ -9,12 +9,17 @@ import {
   getAllProductsApiEvents,
   ProductsStore,
 } from '@products/store';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-product-list-page',
-  imports: [CommonModule, ProductsTable],
-  templateUrl: './product-list-page.html',
-  styleUrl: './product-list-page.css',
+  imports: [CommonModule, ProductsTable, CardModule],
+  template: `
+    <app-products-table
+      [productListResponse]="productsStore.productListResponse()"
+      (deleteProduct)="onDeleteProduct($event)"
+    />
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductListPage {
