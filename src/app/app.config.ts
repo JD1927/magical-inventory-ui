@@ -3,7 +3,9 @@ import type { ApplicationConfig } from '@angular/core';
 import { provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
+import { DialogService } from 'primeng/dynamicdialog';
 import { APP_ROUTES } from './app.routes';
 import { EmeraldStaleKindi } from './preset.prime';
 
@@ -14,6 +16,9 @@ export const appConfig: ApplicationConfig = {
     provideRouter(APP_ROUTES, withComponentInputBinding()),
     provideHttpClient(),
     // Added for PrimeNG
+    DialogService,
+    ConfirmationService,
+    MessageService,
     provideAnimations(),
     providePrimeNG({
       theme: {
