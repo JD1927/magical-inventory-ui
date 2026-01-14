@@ -1,0 +1,25 @@
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+  <div class="col-span-1 lg:col-span-8">
+    <p-card header="Inventory Movements Timeline" class="relative">
+      <div class="inventory-movements-timeline mb-4">
+        <app-inventory-movements-timeline [currentProductId]="currentProductId()"
+          [inventoryMovementsResponse]="inventoryMovementsResponse()" (loadMore)="onLoadMore()" />
+        <div class="load-more">
+          @let movementsSize = inventoryMovementsResponse().movements.length;
+          @let totalRecords = inventoryMovementsResponse().totalRecords;
+          @let canLoadMore = totalRecords > movementsSize;
+          @if (canLoadMore) {
+          <p-button label="Load more" (onClick)="onLoadMore()" icon="pi pi-download" [text]="true"
+            [loading]="inventoryStore.loading()" iconPos="right" />
+          }
+        </div>
+      </div>
+    </p-card>
+  </div>
+  <div class="hidden lg:block col-span-1 lg:col-span-4">
+    <p-card header="Record Movement">
+      <app-inventory-movement-form [currentProductId]="currentProductId()" [isCalledFromDialog]="false"
+        (productSelectionChange)="onProductSelectionChange($event)" />
+    </p-card>
+  </div>
+</div>
