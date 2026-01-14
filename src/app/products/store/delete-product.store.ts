@@ -28,11 +28,11 @@ export const DeleteProductStore = signalStore(
       errorMessage: null,
       successMessage: null,
     })),
-    on(deleteProductApiEvents.deletedSuccess, (_, state) => ({
+    on(deleteProductApiEvents.deletedSuccess, ({ payload: successMessage }, state) => ({
       ...state,
       loading: false,
       errorMessage: null,
-      successMessage: 'Product deleted successfully!',
+      successMessage,
     })),
     on(deleteProductApiEvents.deletedFailure, ({ payload: errorMessage }, state) => ({
       ...state,
@@ -46,7 +46,7 @@ export const DeleteProductStore = signalStore(
       switchMap(({ payload: id }) => {
         return service.delete(id).pipe(
           mapResponse({
-            next: () => deleteProductApiEvents.deletedSuccess(),
+            next: ({ message }) => deleteProductApiEvents.deletedSuccess(message),
             error: () => deleteProductApiEvents.deletedFailure('Could not delete product'),
           }),
         );

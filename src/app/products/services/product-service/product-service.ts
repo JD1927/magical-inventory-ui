@@ -41,7 +41,7 @@ export class ProductService {
     return this.http.patch<IProduct>(`${API_PRODUCTS}/${id}`, dto);
   }
 
-  delete(id: string) {
-    return this.http.delete(`${API_PRODUCTS}/${id}`);
+  delete(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${API_PRODUCTS}/${id}`);
   }
 }
