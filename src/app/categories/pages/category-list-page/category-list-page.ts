@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import type { OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoriesTable } from '@categories/components';
 import {
@@ -12,7 +13,6 @@ import { Dispatcher, Events } from '@ngrx/signals/events';
 
 @Component({
   selector: 'app-category-list-page',
-  standalone: true,
   imports: [CommonModule, CategoriesTable],
   templateUrl: './category-list-page.html',
   styleUrl: './category-list-page.css',
