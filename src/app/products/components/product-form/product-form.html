@@ -29,11 +29,12 @@
   <div class="grid grid-cols-2 gap-4 mb-4">
     <div>
       <p-floatlabel>
-        <p-select class="w-full" inputId="mainCategory" formControlName="mainCategory" [options]="mainCategories()"
-          optionLabel="name" class="w-full" [invalid]="formValidations.isInvalid(productForm, 'mainCategory')" />
-        <label for="mainCategory">Main Category</label>
+        <p-select class="w-full" inputId="mainCategoryId" formControlName="mainCategoryId" [options]="mainCategories()"
+          optionLabel="name" optionValue="id" class="w-full"
+          [invalid]="formValidations.isInvalid(productForm, 'mainCategoryId')" />
+        <label for="mainCategoryId">Main Category</label>
       </p-floatlabel>
-      @if (formValidations.isInvalid(productForm, 'mainCategory')) {
+      @if (formValidations.isInvalid(productForm, 'mainCategoryId')) {
       <p-message styleClass="mt-2" severity="error" size="small" variant="simple">Main category field is
         required.</p-message>
       }
@@ -41,9 +42,9 @@
 
     <div>
       <p-floatlabel>
-        <p-select class="w-full" inputId="secondaryCategory" formControlName="secondaryCategory"
-          [options]="secondaryCategories()" optionLabel="name" class="w-full" />
-        <label for="secondaryCategory">Secondary Category</label>
+        <p-select class="w-full" inputId="secondaryCategoryId" formControlName="secondaryCategoryId"
+          [options]="secondaryCategories()" optionLabel="name" optionValue="id" class="w-full" />
+        <label for="secondaryCategoryId">Secondary Category</label>
       </p-floatlabel>
     </div>
 
@@ -64,8 +65,10 @@
 
 
   <div class="flex justify-end gap-2 mt-4">
+    @let mainButtonLabel = productId() ? 'Update' : 'Create';
+    @let mainButtonIcon = productId() ? 'pi pi-pencil' : 'pi pi-plus';
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!productForm.valid"
+    <p-button [icon]="mainButtonIcon" type="submit" [label]="mainButtonLabel" [disabled]="!productForm.valid"
       [loading]="createProductStore.loading()" />
   </div>
 </form>

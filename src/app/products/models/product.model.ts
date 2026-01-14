@@ -27,8 +27,8 @@ export interface ICreateProductForm {
   name: FormControl<string>;
   description: FormControl<string>;
   minStock: FormControl<number>;
-  mainCategory: FormControl<ICategory | null>;
-  secondaryCategory: FormControl<ICategory | null>;
+  mainCategoryId: FormControl<string | null>;
+  secondaryCategoryId: FormControl<string | null>;
   isActive: FormControl<boolean>;
 }
 

@@ -1,15 +1,22 @@
 import { CommonModule } from '@angular/common';
 import type { Signal } from '@angular/core';
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UpdateProductStore } from '@app/products/store/update-product.store';
 import type { ICategory } from '@categories/models/category.model';
 import { CategoryService } from '@categories/services';
 import { FormValidations } from '@common/utils';
 import { Dispatcher, Events } from '@ngrx/signals/events';
-import type { ICreateProductDto, ICreateProductForm } from '@products/models/product.model';
-import { createNewProductApiEvents, CreateProductStore } from '@products/store';
+import type { ICreateProductForm, IProduct } from '@products/models/product.model';
+import {
+  createNewProductApiEvents,
+  CreateProductStore,
+  getProductByApiEvents,
+  GetProductByStore,
+  updateProductApiEvents,
+} from '@products/store';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -19,11 +26,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-
-export interface IProductFormResult {
-  productId?: string;
-  createProductDto: ICreateProductDto;
-}
 
 @Component({
   selector: 'app-product-form',
@@ -56,13 +58,13 @@ export class ProductForm {
   });
   secondaryCategories: Signal<ICategory[]> = toSignal(
     this.categoryService.getAllCategories(false),
-    {
-      initialValue: [],
-    },
+    { initialValue: [] },
   );
 
   // Store, Events & Dispatcher
   createProductStore = inject(CreateProductStore);
+  updateProductStore = inject(UpdateProductStore);
+  getProductBy = inject(GetProductByStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
 
@@ -72,9 +74,11 @@ export class ProductForm {
 
   constructor() {
     this.initializeForm();
+    this.listenToFormEvents();
     effect(() => {
-      const id = this.productId();
-      console.log('🚀 ~ ProductForm ~ constructor ~ id:', id);
+      const productId = this.productId();
+      if (!productId) return;
+      this.dispatcher.dispatch(getProductByApiEvents.getBy(productId));
     });
   }
 
@@ -88,8 +92,8 @@ export class ProductForm {
         nonNullable: true,
         validators: Validators.compose([Validators.minLength(3), Validators.maxLength(500)]),
       }),
-      mainCategory: new FormControl<ICategory | null>(null, Validators.required),
-      secondaryCategory: new FormControl<ICategory | null>(null),
+      mainCategoryId: new FormControl<string | null>(null, Validators.required),
+      secondaryCategoryId: new FormControl<string | null>(null),
       minStock: new FormControl<number>(1, {
         nonNullable: true,
         validators: Validators.compose([
@@ -105,30 +109,55 @@ export class ProductForm {
     });
   }
 
+  private listenToFormEvents(): void {
+    this.events
+      .on(getProductByApiEvents.gottenBySuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ payload: product }) => this.setFormData(product));
+  }
+
+  private setFormData(product: IProduct): void {
+    const { mainCategory, secondaryCategory } = product;
+    // Set product name
+    this.productForm.controls['name'].setValue(product.name);
+    this.productForm.controls['name'].updateValueAndValidity();
+    // Set product description
+    this.productForm.controls['description'].setValue(product.description || '');
+    this.productForm.controls['description'].updateValueAndValidity();
+    // Set product mainCategoryId
+    this.productForm.controls['mainCategoryId'].setValue(mainCategory?.id || null);
+    this.productForm.controls['mainCategoryId'].updateValueAndValidity();
+    // Set product secondaryCategoryId
+    this.productForm.controls['secondaryCategoryId'].setValue(secondaryCategory?.id || null);
+    this.productForm.controls['secondaryCategoryId'].updateValueAndValidity();
+    // Set product minStock
+    this.productForm.controls['minStock'].setValue(product.minStock);
+    this.productForm.controls['minStock'].updateValueAndValidity();
+    // Set product isActive
+    this.productForm.controls['isActive'].setValue(product.isActive);
+    this.productForm.controls['isActive'].updateValueAndValidity();
+  }
+
   onSubmit(): void {
     if (!this.productForm.valid) return;
     // Create DTO from form value
-    const { mainCategory, secondaryCategory, name, description, minStock, isActive } =
+    const { mainCategoryId, secondaryCategoryId, name, description, minStock, isActive } =
       this.productForm.value;
 
-    const createProductDto: ICreateProductDto = {
+    const dto = {
       name: name ?? '',
       description: description ?? '',
       minStock: minStock ?? 1,
       isActive: isActive ?? true,
-      mainCategoryId: mainCategory?.id ?? null,
-      secondaryCategoryId: secondaryCategory?.id ?? null,
+      mainCategoryId: mainCategoryId ?? null,
+      secondaryCategoryId: secondaryCategoryId ?? null,
     };
-
-    this.handleFormSubmit({ productId: this.productId(), createProductDto });
-  }
-
-  private handleFormSubmit(productFormResult: IProductFormResult): void {
-    if (!productFormResult?.productId) {
-      this.dispatcher.dispatch(
-        createNewProductApiEvents.create(productFormResult.createProductDto),
-      );
-    }
+    const productId = this.productId();
+    // Handle update/create event
+    const event = productId
+      ? updateProductApiEvents.update({ id: productId, dto: dto })
+      : createNewProductApiEvents.create(dto);
+    this.dispatcher.dispatch(event);
   }
 
   onCancel(): void {

@@ -6,13 +6,19 @@ import { PageHeader } from '@common/components';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductDialogService } from '@products/services';
 import { ButtonModule } from 'primeng/button';
-import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-products-page',
-  imports: [RouterOutlet, PageHeader, ButtonModule, DynamicDialogModule, TooltipModule],
-  providers: [ProductDialogService, DialogService],
+  imports: [
+    RouterOutlet,
+    PageHeader,
+    ButtonModule,
+    DynamicDialogModule,
+    TooltipModule,
+  ],
+  providers: [ProductDialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <app-page-header title="Products" description="Manage your product inventory">
