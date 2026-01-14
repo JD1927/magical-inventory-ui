@@ -14,6 +14,7 @@ export interface IInventoryRecord {
   product: IProduct;
   stock: number;
   averageCost: number;
+  averageSalePrice: number;
   updatedAt: string;
 }
 
