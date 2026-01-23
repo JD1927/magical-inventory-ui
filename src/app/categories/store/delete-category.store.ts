@@ -46,7 +46,7 @@ export const DeleteCategoryStore = signalStore(
       switchMap(({ payload: id }) => {
         return service.delete(id).pipe(
           mapResponse({
-            next: () => deleteCategoryApiEvents.deletedSuccess(),
+            next: ({ message }) => deleteCategoryApiEvents.deletedSuccess(message),
             error: () => deleteCategoryApiEvents.deletedFailure('Could not delete product'),
           }),
         );

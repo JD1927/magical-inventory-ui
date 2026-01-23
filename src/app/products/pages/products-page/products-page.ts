@@ -11,13 +11,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-products-page',
-  imports: [
-    RouterOutlet,
-    PageHeader,
-    ButtonModule,
-    DynamicDialogModule,
-    TooltipModule,
-  ],
+  imports: [RouterOutlet, PageHeader, ButtonModule, DynamicDialogModule, TooltipModule],
   providers: [ProductDialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `

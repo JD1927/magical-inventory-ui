@@ -36,8 +36,10 @@
   </div>
 
   <div class="flex justify-end gap-2">
+    @let mainButtonLabel = categoryId() ? 'Update' : 'Create';
+    @let mainButtonIcon = categoryId() ? 'pi pi-pencil' : 'pi pi-plus';
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!categoryForm.valid"
+    <p-button [icon]="mainButtonIcon" type="submit" [label]="mainButtonLabel" [disabled]="!categoryForm.valid"
       [loading]="createCategoryStore.loading()" />
   </div>
 </form>

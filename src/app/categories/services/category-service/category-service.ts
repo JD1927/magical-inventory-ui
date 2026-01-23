@@ -36,7 +36,7 @@ export class CategoryService {
     return this.http.patch<ICategory>(`${API_CATEGORIES}/${id}`, dto);
   }
 
-  delete(id: string) {
-    return this.http.delete(`${API_CATEGORIES}/${id}`);
+  delete(id: string): Observable<{ message: string }> {
+    return this.http.delete<{ message: string }>(`${API_CATEGORIES}/${id}`);
   }
 }

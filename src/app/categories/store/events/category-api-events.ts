@@ -1,4 +1,8 @@
-import type { ICategory, ICreateCategoryDto } from '@categories/models/category.model';
+import type {
+  ICategory,
+  ICreateCategoryDto,
+  IUpdateCategoryDto,
+} from '@categories/models/category.model';
 import { type } from '@ngrx/signals';
 import { eventGroup } from '@ngrx/signals/events';
 
@@ -20,11 +24,30 @@ export const createNewCategoryApiEvents = eventGroup({
   },
 });
 
+export const getCategoryByApiEvents = eventGroup({
+  source: 'Get Category By API',
+  events: {
+    getBy: type<string>(),
+    gottenBySuccess: type<ICategory>(),
+    gottenByFailure: type<string>(),
+    clearSelected: type<void>(),
+  },
+});
+
+export const updateCategoryApiEvents = eventGroup({
+  source: 'Update Category API',
+  events: {
+    update: type<{ id: string; dto: IUpdateCategoryDto }>(),
+    updatedSuccess: type<ICategory>(),
+    updatedFailure: type<string>(),
+  },
+});
+
 export const deleteCategoryApiEvents = eventGroup({
   source: 'Delete Category API',
   events: {
     delete: type<string>(),
-    deletedSuccess: type<void>(),
+    deletedSuccess: type<string>(),
     deletedFailure: type<string>(),
   },
 });

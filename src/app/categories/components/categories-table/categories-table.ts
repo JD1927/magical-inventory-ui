@@ -14,5 +14,10 @@ import { Tag } from 'primeng/tag';
 })
 export class CategoriesTable {
   categories = input.required<ICategory[]>();
-  deleteCategory = output<string>();
+  updateCategory = output<string>();
+  deleteCategory = output<{ categoryId: string; event: Event }>();
+
+  onDelete(categoryId: string, event: Event): void {
+    this.deleteCategory.emit({ categoryId, event });
+  }
 }

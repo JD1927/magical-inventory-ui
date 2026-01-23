@@ -3,11 +3,14 @@ import { Component, effect, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import type { ICreateCategoryDto, ICreateCategoryForm } from '@categories/models/category.model';
+import type { ICategory, ICreateCategoryForm } from '@categories/models/category.model';
 import {
   CreateCategoryStore,
   createNewCategoryApiEvents,
-  getAllCategoriesApiEvents,
+  getCategoryByApiEvents,
+  GetCategoryByStore,
+  updateCategoryApiEvents,
+  UpdateCategoryStore,
 } from '@categories/store';
 import { FormValidations } from '@common/utils';
 import { Dispatcher, Events } from '@ngrx/signals/events';
@@ -20,11 +23,6 @@ import { MessageModule } from 'primeng/message';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-
-export interface ICategoryFormResult {
-  categoryId?: string;
-  createCategoryDto: ICreateCategoryDto;
-}
 
 @Component({
   selector: 'app-category-form',
@@ -48,6 +46,8 @@ export class CategoryForm {
   categoryForm!: FormGroup<ICreateCategoryForm>;
   formValidations = inject(FormValidations);
   createCategoryStore = inject(CreateCategoryStore);
+  updateCategoryStore = inject(UpdateCategoryStore);
+  getCategoryByStore = inject(GetCategoryByStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
   dialogRef = inject(DynamicDialogRef<CategoryForm>);
@@ -56,12 +56,12 @@ export class CategoryForm {
 
   constructor() {
     this.initializeForm();
+    this.listenToFormEvents();
     effect(() => {
-      const id = this.categoryId();
-      console.log('🚀 ~ CategoryForm ~ constructor ~ id:', id);
+      const categoryId = this.categoryId();
+      if (!categoryId) return;
+      this.dispatcher.dispatch(getCategoryByApiEvents.getBy(categoryId));
     });
-
-    this.listenToCreationEvents();
   }
 
   private initializeForm(): void {
@@ -80,46 +80,42 @@ export class CategoryForm {
     });
   }
 
-  private listenToCreationEvents() {
-    // Move subscription to constructor for proper injection context
-    // TODO: Move events to category list page
+  private listenToFormEvents(): void {
     this.events
-      .on(createNewCategoryApiEvents.createdSuccess)
+      .on(getCategoryByApiEvents.gottenBySuccess)
       .pipe(takeUntilDestroyed())
-      .subscribe(() => {
-        // Refresh product list
-        this.dispatcher.dispatch(getAllCategoriesApiEvents.load());
-      });
+      .subscribe(({ payload: category }) => this.setFormData(category));
+  }
 
-    this.events
-      .on(createNewCategoryApiEvents.createdFailure)
-      .pipe(takeUntilDestroyed())
-      .subscribe(({ payload }) => {
-        console.error(payload);
-      });
+  private setFormData(category: ICategory): void {
+    const { name, description, isMain } = category;
+    // Name
+    this.categoryForm.controls.name.setValue(name);
+    this.categoryForm.controls.name.updateValueAndValidity();
+    // Description
+    this.categoryForm.controls.description.setValue(description ?? '');
+    this.categoryForm.controls.description.updateValueAndValidity();
+    // Main category?
+    this.categoryForm.controls.isMain.setValue(isMain);
+    this.categoryForm.controls.isMain.updateValueAndValidity();
   }
 
   onSubmit(): void {
     if (!this.categoryForm.valid) return;
-
+    // Get dto values
     const { name, description, isMain } = this.categoryForm.value;
-
-    const createCategoryDto: ICreateCategoryDto = {
+    // Build DTO
+    const dto = {
       name: name ?? '',
       description: description ?? '',
       isMain: isMain ?? true,
     };
-
-    this.handleFormSubmit({ categoryId: this.categoryId(), createCategoryDto });
-  }
-
-  private handleFormSubmit(productFormResult: ICategoryFormResult): void {
-    if (!productFormResult?.categoryId) {
-      this.dispatcher.dispatch(
-        createNewCategoryApiEvents.create(productFormResult.createCategoryDto),
-      );
-    }
-    this.categoryForm.reset();
+    const categoryId = this.categoryId();
+    // Handle update/create event
+    const event = categoryId
+      ? updateCategoryApiEvents.update({ id: categoryId, dto: dto })
+      : createNewCategoryApiEvents.create(dto);
+    this.dispatcher.dispatch(event);
   }
 
   onCancel(): void {
