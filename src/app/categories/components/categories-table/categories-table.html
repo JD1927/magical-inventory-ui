@@ -2,8 +2,8 @@
   [size]="'large'">
   <ng-template #header>
     <tr>
-      <th>Category ID</th>
       <th>Name</th>
+      <th>Description</th>
       <th>Main Category</th>
       <th>Last Update</th>
       <th>Actions</th>
@@ -11,8 +11,8 @@
   </ng-template>
   <ng-template #body let-category>
     <tr>
-      <td>{{ category.id | truncate: 8 : ' ' }}</td>
       <td>{{ category.name }}</td>
+      <td [pTooltip]="category.description" tooltipPosition="bottom">{{ category.description | truncate: 50 }}</td>
       <td>
         @if (category.isMain) {
         <p-tag icon="pi pi-circle-on" value="Primary" />

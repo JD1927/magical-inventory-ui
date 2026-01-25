@@ -5,10 +5,11 @@ import { TruncatePipe } from '@common/pipes';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { Tag } from 'primeng/tag';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-categories-table',
-  imports: [CommonModule, TableModule, TruncatePipe, Tag, Button],
+  imports: [CommonModule, TableModule, TruncatePipe, Tag, Button, Tooltip],
   templateUrl: './categories-table.html',
   styleUrl: './categories-table.css',
 })
