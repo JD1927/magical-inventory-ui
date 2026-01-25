@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { ELimitSettings, type IPaginationDto } from '@common/models/pagination.model';
+import { ELimitSettings, type IPaginationDto } from '@common/models';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
