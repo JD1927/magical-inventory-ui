@@ -46,7 +46,7 @@ export const DeleteSupplierStore = signalStore(
       switchMap(({ payload: id }) => {
         return service.delete(id).pipe(
           mapResponse({
-            next: () => deleteSupplierApiEvents.deletedSuccess(),
+            next: ({ message }) => deleteSupplierApiEvents.deletedSuccess(message),
             error: () => deleteSupplierApiEvents.deletedFailure('Could not delete supplier'),
           }),
         );

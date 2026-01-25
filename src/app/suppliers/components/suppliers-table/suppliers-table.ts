@@ -14,5 +14,10 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class SuppliersTable {
   suppliers = input.required<ISupplier[]>();
-  deleteSupplier = output<string>();
+  updateSupplier = output<string>();
+  deleteSupplier = output<{ supplierId: string; event: Event }>();
+
+  onDelete(supplierId: string, event: Event): void {
+    this.deleteSupplier.emit({ supplierId, event });
+  }
 }

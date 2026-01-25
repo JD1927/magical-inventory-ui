@@ -86,8 +86,10 @@
   </div>
 
   <div class="flex justify-end gap-2">
+    @let mainButtonLabel = supplierId() ? 'Update' : 'Create';
+    @let mainButtonIcon = supplierId() ? 'pi pi-pencil' : 'pi pi-plus';
     <p-button icon="pi pi-times" type="button" label="Cancel" (onClick)="onCancel()" styleClass="p-button-text" />
-    <p-button icon="pi pi-plus" type="submit" label="Create" [disabled]="!supplierForm.valid"
+    <p-button [icon]="mainButtonIcon" type="submit" [label]="mainButtonLabel"
       [loading]="createSupplierStore.loading()" />
   </div>
 </form>

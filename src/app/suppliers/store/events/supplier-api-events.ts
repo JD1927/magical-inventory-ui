@@ -1,4 +1,8 @@
-import type { ICreateSupplierDto, ISupplier } from '@suppliers/models/supplier.model';
+import type {
+  ICreateSupplierDto,
+  ISupplier,
+  IUpdateSupplierDto,
+} from '@suppliers/models/supplier.model';
 import { type } from '@ngrx/signals';
 import { eventGroup } from '@ngrx/signals/events';
 
@@ -20,11 +24,30 @@ export const createNewSupplierApiEvents = eventGroup({
   },
 });
 
+export const getSupplierByApiEvents = eventGroup({
+  source: 'Get Supplier By API',
+  events: {
+    getBy: type<string>(),
+    gottenBySuccess: type<ISupplier>(),
+    gottenByFailure: type<string>(),
+    clearSelected: type<void>(),
+  },
+});
+
+export const updateSupplierApiEvents = eventGroup({
+  source: 'Update Supplier API',
+  events: {
+    update: type<{ id: string; dto: IUpdateSupplierDto }>(),
+    updatedSuccess: type<ISupplier>(),
+    updatedFailure: type<string>(),
+  },
+});
+
 export const deleteSupplierApiEvents = eventGroup({
   source: 'Delete Supplier API',
   events: {
     delete: type<string>(),
-    deletedSuccess: type<void>(),
+    deletedSuccess: type<string>(),
     deletedFailure: type<string>(),
   },
 });

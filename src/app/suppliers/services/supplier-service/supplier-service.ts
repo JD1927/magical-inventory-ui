@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import type { IError } from '@common/models';
 import { environment } from '@environments/environment';
 import type {
   ICreateSupplierDto,
@@ -32,7 +33,7 @@ export class SupplierService {
     return this.http.patch<ISupplier>(`${API_SUPPLIERS}/${id}`, dto);
   }
 
-  delete(id: string) {
-    return this.http.delete(`${API_SUPPLIERS}/${id}`);
+  delete(id: string): Observable<IError> {
+    return this.http.delete<IError>(`${API_SUPPLIERS}/${id}`);
   }
 }

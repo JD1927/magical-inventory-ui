@@ -45,9 +45,8 @@ export class SuppliersPage {
     this.events
       .on(createNewSupplierApiEvents.createdSuccess)
       .pipe(takeUntilDestroyed())
-      .subscribe(({ payload }) => {
+      .subscribe(() => {
         // Refresh supplier list
-        console.log('🚀 ~ SuppliersPage ~ listenToCreationEvents ~ payload:', payload);
         this.dispatcher.dispatch(getAllSuppliersApiEvents.load());
         this.supplierDialogService.closeDialog();
       });

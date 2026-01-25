@@ -1,11 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import type { FormGroup } from '@angular/forms';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormValidations } from '@common/utils';
-import { Dispatcher } from '@ngrx/signals/events';
-import type { ICreateSupplierDto, ICreateSupplierForm } from '@suppliers/models/supplier.model';
-import { createNewSupplierApiEvents, CreateSupplierStore } from '@suppliers/store';
+import { Dispatcher, Events } from '@ngrx/signals/events';
+import type {
+  ICreateSupplierDto,
+  ICreateSupplierForm,
+  ISupplier,
+} from '@suppliers/models/supplier.model';
+import {
+  createNewSupplierApiEvents,
+  CreateSupplierStore,
+  getSupplierByApiEvents,
+  updateSupplierApiEvents,
+} from '@suppliers/store';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabel } from 'primeng/floatlabel';
@@ -44,15 +54,18 @@ export class SupplierForm {
   formValidations = inject(FormValidations);
   createSupplierStore = inject(CreateSupplierStore);
   dispatcher = inject(Dispatcher);
+  events = inject(Events);
   // Form Builder
   private fb: FormBuilder = inject(FormBuilder);
   private dialogRef = inject(DynamicDialogRef<SupplierForm>);
 
   constructor() {
     this.initializeForm();
+    this.listenToFormEvents();
     effect(() => {
-      const id = this.supplierId();
-      console.log('🚀 ~ SupplierForm ~ constructor ~ id:', id);
+      const supplierId = this.supplierId();
+      if (!supplierId) return;
+      this.dispatcher.dispatch(getSupplierByApiEvents.getBy(supplierId));
     });
   }
 
@@ -89,12 +102,41 @@ export class SupplierForm {
     });
   }
 
+  private listenToFormEvents(): void {
+    this.events
+      .on(getSupplierByApiEvents.gottenBySuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ payload: supplier }) => this.setFormData(supplier));
+  }
+
+  private setFormData(supplier: ISupplier): void {
+    const { name, description, nit, address, contactNumber, email } = supplier;
+    // Set supplier name
+    this.supplierForm.controls['name'].setValue(name);
+    this.supplierForm.controls['name'].updateValueAndValidity();
+    // Set supplier description
+    this.supplierForm.controls['description'].setValue(description || '');
+    this.supplierForm.controls['description'].updateValueAndValidity();
+    // Set supplier NIT
+    this.supplierForm.controls['nit'].setValue(nit || null);
+    this.supplierForm.controls['nit'].updateValueAndValidity();
+    // Set supplier address
+    this.supplierForm.controls['address'].setValue(address || null);
+    this.supplierForm.controls['address'].updateValueAndValidity();
+    // Set supplier contactNumber
+    this.supplierForm.controls['contactNumber'].setValue(contactNumber || null);
+    this.supplierForm.controls['contactNumber'].updateValueAndValidity();
+    // Set supplier email
+    this.supplierForm.controls['email'].setValue(email || null);
+    this.supplierForm.controls['email'].updateValueAndValidity();
+  }
+
   onSubmit(): void {
     if (!this.supplierForm.valid) return;
-
+    // Get supplier fields
     const { name, description, address, contactNumber, email, nit } = this.supplierForm.value;
-
-    const createSupplierDto: ICreateSupplierDto = {
+    // Create DTO for create/update
+    const dto = {
       name: name ?? '',
       description: description ?? '',
       nit: nit ?? '',
@@ -102,15 +144,12 @@ export class SupplierForm {
       contactNumber: contactNumber ?? '',
       email: email ?? '',
     };
-
-    this.handleFormSubmit({ supplierId: this.supplierId(), createSupplierDto });
-  }
-
-  private handleFormSubmit(formResult: ISupplierFormResult): void {
-    if (!formResult?.supplierId) {
-      this.dispatcher.dispatch(createNewSupplierApiEvents.create(formResult.createSupplierDto));
-    }
-    this.supplierForm.reset();
+    const supplierId = this.supplierId();
+    // Handle create/update events
+    const event = supplierId
+      ? updateSupplierApiEvents.update({ id: supplierId, dto: dto })
+      : createNewSupplierApiEvents.create(dto);
+    this.dispatcher.dispatch(event);
   }
 
   onCancel(): void {
