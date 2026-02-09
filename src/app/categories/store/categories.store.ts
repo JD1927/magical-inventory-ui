@@ -6,6 +6,8 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { CategoryService } from '../services';
 import { getAllCategoriesApiEvents } from './events/category-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface CategoriesState {
   categories: ICategory[];
@@ -57,8 +59,11 @@ export const CategoriesStore = signalStore(
         return service.getAllCategories().pipe(
           mapResponse({
             next: (result) => getAllCategoriesApiEvents.loadedSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              getAllCategoriesApiEvents.loadedFailure(error.message ?? 'Could not load categories'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load categories';
+              return getAllCategoriesApiEvents.loadedFailure(errorMessage);
+            },
           }),
         );
       }),

@@ -5,6 +5,8 @@ import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { createNewCategoryApiEvents } from './events/category-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface CategoriesState {
   loading: boolean;
@@ -47,10 +49,11 @@ export const CreateCategoryStore = signalStore(
         return service.create(dto).pipe(
           mapResponse({
             next: (result) => createNewCategoryApiEvents.createdSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              createNewCategoryApiEvents.createdFailure(
-                error.message ?? 'Could not perform category creation',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to create category';
+              return createNewCategoryApiEvents.createdFailure(errorMessage);
+            },
           }),
         );
       }),

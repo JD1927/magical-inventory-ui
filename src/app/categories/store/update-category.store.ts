@@ -6,6 +6,8 @@ import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { updateCategoryApiEvents } from './events/category-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface UpdateCategoryState {
   updatedCategory: ICategory | null;
@@ -36,7 +38,7 @@ export const UpdateCategoryStore = signalStore(
       updatedCategory: payload,
       loading: false,
       errorMessage: null,
-      successMessage: 'Product updated successfully!',
+      successMessage: 'Category updated successfully!',
     })),
     on(updateCategoryApiEvents.updatedFailure, ({ payload: errorMessage }, state) => ({
       ...state,
@@ -55,7 +57,11 @@ export const UpdateCategoryStore = signalStore(
                 ...payload.dto,
                 id: payload.id,
               } as ICategory),
-            error: () => updateCategoryApiEvents.updatedFailure('Could not update product'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to update category';
+              return updateCategoryApiEvents.updatedFailure(errorMessage);
+            },
           }),
         );
       }),

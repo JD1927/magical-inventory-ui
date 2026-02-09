@@ -6,6 +6,8 @@ import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { getCategoryByApiEvents } from './events/category-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface GetCategoryByState {
   selectedCategory: ICategory | null;
@@ -46,7 +48,11 @@ export const GetCategoryByStore = signalStore(
         return service.getById(categoryId).pipe(
           mapResponse({
             next: (category: ICategory) => getCategoryByApiEvents.gottenBySuccess(category),
-            error: () => getCategoryByApiEvents.gottenByFailure('Could not get category'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to get category';
+              return getCategoryByApiEvents.gottenByFailure(errorMessage);
+            },
           }),
         );
       }),
