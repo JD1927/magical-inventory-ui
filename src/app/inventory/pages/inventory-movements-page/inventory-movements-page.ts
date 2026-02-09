@@ -13,10 +13,14 @@ import {
   createNewOutInventoryMovementApiEvents,
   getAllInventoryMovementsApiEvents,
   InventoryStore,
+  UndoInventoryMovementStore,
+  undoMovementApiEvents,
 } from '@inventory/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { InventoryDialogService } from '@inventory/services';
 
 @Component({
   selector: 'app-inventory-movements-page',
@@ -45,6 +49,10 @@ export class InventoryMovementsPage {
   inventoryStore = inject(InventoryStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
+  messageService = inject(MessageService);
+  confirmationService = inject(ConfirmationService);
+  inventoryDialogService = inject(InventoryDialogService);
+  undoInventoryMovementStore = inject(UndoInventoryMovementStore);
   // Signals
   movementQueryDto = signal<IInventoryMovementQueryDto>(INITIAL_MOVEMENT_QUERY_DTO);
   // Computed signals
@@ -65,6 +73,7 @@ export class InventoryMovementsPage {
 
   listenToInventoryEvents() {
     this.listenToCreateMovementEvents();
+    this.listenToUndoMovementEvents();
   }
 
   private listenToCreateMovementEvents() {
@@ -84,6 +93,33 @@ export class InventoryMovementsPage {
       });
   }
 
+  private listenToUndoMovementEvents() {
+    this.events
+      .on(undoMovementApiEvents.undoneSuccess)
+      .pipe(takeUntilDestroyed())
+      .subscribe(() => {
+        this.confirmationService.close();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Undo Operation',
+          detail: 'Inventory movement undone successfully!',
+        });
+        this.loadMovementsByQuery();
+      });
+
+    this.events
+      .on(undoMovementApiEvents.undoneFailure)
+      .pipe(takeUntilDestroyed())
+      .subscribe(({ payload: errorMessage }) => {
+        this.confirmationService.close();
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Undo Operation',
+          detail: errorMessage,
+        });
+      });
+  }
+
   loadMovementsByQuery() {
     this.dispatcher.dispatch(getAllInventoryMovementsApiEvents.load(this.movementQueryDto()));
   }
@@ -99,6 +135,15 @@ export class InventoryMovementsPage {
       loadMore: true,
     }));
     this.loadMovementsByQuery();
+  }
+
+  onUndoMovement({ movementId, event }: { movementId: string; event: Event }): void {
+    this.inventoryDialogService
+      .openUndoConfirmationDialog(event)
+      .subscribe((isConfirmed: boolean) => {
+        if (!isConfirmed) return;
+        this.dispatcher.dispatch(undoMovementApiEvents.undo(movementId));
+      });
   }
 
   onProductSelectionChange(productId: string): void {
