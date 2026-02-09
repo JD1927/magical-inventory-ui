@@ -7,6 +7,8 @@ import type { IProductListResponse } from '@products/models/product.model';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { getAllProductsApiEvents } from './events/product-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface ProductsState {
   productListResponse: IProductListResponse;
@@ -67,10 +69,11 @@ export const ProductsStore = signalStore(
         return service.getAllWithParams(limit, offset).pipe(
           mapResponse({
             next: (products) => getAllProductsApiEvents.loadedSuccess(products),
-            error: (error: { message: string; statusCode: number }) =>
-              getAllProductsApiEvents.loadedFailure(
-                error.message ?? 'Could not perform product loading',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load products';
+              return getAllProductsApiEvents.loadedFailure(errorMessage);
+            },
           }),
         );
       }),

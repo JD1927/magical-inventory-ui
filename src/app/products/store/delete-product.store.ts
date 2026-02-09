@@ -5,6 +5,8 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { deleteProductApiEvents } from './events/product-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface DeleteProductState {
   loading: boolean;
@@ -47,7 +49,11 @@ export const DeleteProductStore = signalStore(
         return service.delete(id).pipe(
           mapResponse({
             next: ({ message }) => deleteProductApiEvents.deletedSuccess(message),
-            error: () => deleteProductApiEvents.deletedFailure('Could not delete product'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to delete product';
+              return deleteProductApiEvents.deletedFailure(errorMessage);
+            },
           }),
         );
       }),

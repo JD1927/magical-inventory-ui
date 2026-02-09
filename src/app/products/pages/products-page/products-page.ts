@@ -5,6 +5,7 @@ import { createNewProductApiEvents, getAllProductsApiEvents } from '@app/product
 import { PageHeader } from '@common/components';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductDialogService } from '@products/services';
+import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { TooltipModule } from 'primeng/tooltip';
@@ -32,6 +33,7 @@ export class ProductsPage {
   productDialogService = inject(ProductDialogService);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
+  messageService = inject(MessageService);
 
   constructor() {
     this.listenToCreationEvents();
@@ -55,8 +57,13 @@ export class ProductsPage {
     this.events
       .on(createNewProductApiEvents.createdFailure)
       .pipe(takeUntilDestroyed())
-      .subscribe(({ payload }) => {
-        console.error(payload);
+      .subscribe(({ payload: errorMessage }) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Delete Operation',
+          detail: errorMessage,
+        });
+        this.dispatcher.dispatch(getAllProductsApiEvents.load());
       });
   }
 }

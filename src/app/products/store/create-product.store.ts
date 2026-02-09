@@ -5,6 +5,9 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { createNewProductApiEvents } from './events/product-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IProduct } from '../models/product.model';
+import type { IError } from '@app/common/models';
 
 interface CreateProductState {
   loading: boolean;
@@ -41,13 +44,17 @@ export const CreateProductStore = signalStore(
       successMessage: null,
     })),
   ),
-  withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
+  withEffects((_state, events = inject(Events), service = inject(ProductService)) => ({
     create$: events.on(createNewProductApiEvents.create).pipe(
       switchMap(({ payload: dto }) => {
         return service.create(dto).pipe(
           mapResponse({
-            next: (product) => createNewProductApiEvents.createdSuccess(product),
-            error: () => createNewProductApiEvents.createdFailure('Could not create product'),
+            next: (product: IProduct) => createNewProductApiEvents.createdSuccess(product),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to create product';
+              return createNewProductApiEvents.createdFailure(errorMessage);
+            },
           }),
         );
       }),

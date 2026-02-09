@@ -6,6 +6,8 @@ import type { IProduct } from '@products/models/product.model';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { updateProductApiEvents } from './events/product-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface UpdateProductState {
   updatedProduct: IProduct | null;
@@ -55,7 +57,11 @@ export const UpdateProductStore = signalStore(
                 ...payload.dto,
                 id: payload.id,
               } as IProduct),
-            error: () => updateProductApiEvents.updatedFailure('Could not update product'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to update product';
+              return updateProductApiEvents.updatedFailure(errorMessage);
+            },
           }),
         );
       }),

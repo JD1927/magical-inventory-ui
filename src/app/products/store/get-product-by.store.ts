@@ -6,6 +6,8 @@ import type { IProduct } from '@products/models/product.model';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
 import { getProductByApiEvents } from './events/product-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface GetProductByState {
   selectedProduct: IProduct | null;
@@ -46,7 +48,11 @@ export const GetProductByStore = signalStore(
         return service.getById(productId).pipe(
           mapResponse({
             next: (product: IProduct) => getProductByApiEvents.gottenBySuccess(product),
-            error: () => getProductByApiEvents.gottenByFailure('Could not update product'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to get product';
+              return getProductByApiEvents.gottenByFailure(errorMessage);
+            },
           }),
         );
       }),
