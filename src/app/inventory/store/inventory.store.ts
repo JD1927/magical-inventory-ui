@@ -13,6 +13,8 @@ import {
   getAllInventoryMovementsApiEvents,
   getAllInventoryRecordsApiEvents,
 } from './events/inventory-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface InventoryState {
   inventoryRecords: IInventoryRecord[];
@@ -116,10 +118,11 @@ export const InventoryStore = signalStore(
         return service.getAllInventoryRecords().pipe(
           mapResponse({
             next: (result) => getAllInventoryRecordsApiEvents.loadedSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              getAllInventoryRecordsApiEvents.loadedFailure(
-                error.message ?? 'Could not load inventory records',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load inventory records';
+              return getAllInventoryRecordsApiEvents.loadedFailure(errorMessage);
+            },
           }),
         );
       }),
@@ -129,10 +132,11 @@ export const InventoryStore = signalStore(
         return service.getAllInventoryMovements(dto).pipe(
           mapResponse({
             next: (result) => getAllInventoryMovementsApiEvents.loadedSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              getAllInventoryMovementsApiEvents.loadedFailure(
-                error.message ?? 'Could not load inventory movements',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load inventory movements';
+              return getAllInventoryMovementsApiEvents.loadedFailure(errorMessage);
+            },
           }),
         );
       }),

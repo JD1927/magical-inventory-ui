@@ -5,6 +5,8 @@ import { signalStore, withState } from '@ngrx/signals';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { undoMovementApiEvents } from './events/inventory-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface UndoInventoryMovementState {
   loading: boolean;
@@ -47,7 +49,11 @@ export const UndoInventoryMovementStore = signalStore(
         return service.undoMovementById(id).pipe(
           mapResponse({
             next: () => undoMovementApiEvents.undoneSuccess(),
-            error: () => undoMovementApiEvents.undoneFailure('Could not undo inventory movement'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to undo inventory movement';
+              return undoMovementApiEvents.undoneFailure(errorMessage);
+            },
           }),
         );
       }),

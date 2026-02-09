@@ -8,6 +8,8 @@ import {
   createNewInInventoryMovementApiEvents,
   createNewOutInventoryMovementApiEvents,
 } from './events/inventory-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface InventoryMovementState {
   loading: boolean;
@@ -64,10 +66,11 @@ export const CreateInventoryMovementStore = signalStore(
         return service.createInMovement(dto).pipe(
           mapResponse({
             next: (result) => createNewInInventoryMovementApiEvents.createdSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              createNewInInventoryMovementApiEvents.createdFailure(
-                error.message ?? 'Could not perform inventory movement creation',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to create inventory movement';
+              return createNewInInventoryMovementApiEvents.createdFailure(errorMessage);
+            },
           }),
         );
       }),
@@ -77,10 +80,11 @@ export const CreateInventoryMovementStore = signalStore(
         return service.createOutMovement(dto).pipe(
           mapResponse({
             next: (result) => createNewOutInventoryMovementApiEvents.createdSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              createNewOutInventoryMovementApiEvents.createdFailure(
-                error.message ?? 'Could not perform inventory movement creation',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to create inventory movement';
+              return createNewOutInventoryMovementApiEvents.createdFailure(errorMessage);
+            },
           }),
         );
       }),
