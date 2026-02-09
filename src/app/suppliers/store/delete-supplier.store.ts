@@ -5,6 +5,8 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { SupplierService } from '@suppliers/services';
 import { switchMap } from 'rxjs';
 import { deleteSupplierApiEvents } from './events/supplier-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface DeleteSupplierState {
   loading: boolean;
@@ -47,7 +49,11 @@ export const DeleteSupplierStore = signalStore(
         return service.delete(id).pipe(
           mapResponse({
             next: ({ message }) => deleteSupplierApiEvents.deletedSuccess(message),
-            error: () => deleteSupplierApiEvents.deletedFailure('Could not delete supplier'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to delete supplier';
+              return deleteSupplierApiEvents.deletedFailure(errorMessage);
+            },
           }),
         );
       }),

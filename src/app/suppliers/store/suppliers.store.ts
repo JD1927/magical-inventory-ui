@@ -5,6 +5,8 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import type { ISupplier } from '../models/supplier.model';
 import { getAllSuppliersApiEvents } from './events/supplier-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 import { SupplierService } from '../services/supplier-service/supplier-service';
 
 interface SuppliersState {
@@ -52,8 +54,11 @@ export const SuppliersStore = signalStore(
         return service.getAllSuppliers().pipe(
           mapResponse({
             next: (result) => getAllSuppliersApiEvents.loadedSuccess(result),
-            error: (error: { message: string; statusCode: number }) =>
-              getAllSuppliersApiEvents.loadedFailure(error.message ?? 'Could not load suppliers'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load suppliers';
+              return getAllSuppliersApiEvents.loadedFailure(errorMessage);
+            },
           }),
         );
       }),

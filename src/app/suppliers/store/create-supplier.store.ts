@@ -5,6 +5,8 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { SupplierService } from '@suppliers/services';
 import { switchMap } from 'rxjs';
 import { createNewSupplierApiEvents } from './events/supplier-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface SuppliersState {
   loading: boolean;
@@ -47,10 +49,11 @@ export const CreateSupplierStore = signalStore(
         return service.create(dto).pipe(
           mapResponse({
             next: (supplier) => createNewSupplierApiEvents.createdSuccess(supplier),
-            error: (error: { message: string; statusCode: number }) =>
-              createNewSupplierApiEvents.createdFailure(
-                error.message ?? 'Could not perform supplier creation',
-              ),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to create supplier';
+              return createNewSupplierApiEvents.createdFailure(errorMessage);
+            },
           }),
         );
       }),

@@ -6,6 +6,8 @@ import type { ISupplier } from '@suppliers/models/supplier.model';
 import { SupplierService } from '@suppliers/services';
 import { switchMap } from 'rxjs';
 import { getSupplierByApiEvents } from './events/supplier-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface GetSupplierByState {
   selectedSupplier: ISupplier | null;
@@ -46,7 +48,11 @@ export const GetSupplierByStore = signalStore(
         return service.getById(supplierId).pipe(
           mapResponse({
             next: (product: ISupplier) => getSupplierByApiEvents.gottenBySuccess(product),
-            error: () => getSupplierByApiEvents.gottenByFailure('Could not update supplier'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to get supplier';
+              return getSupplierByApiEvents.gottenByFailure(errorMessage);
+            },
           }),
         );
       }),

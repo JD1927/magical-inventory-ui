@@ -6,6 +6,8 @@ import type { ISupplier } from '@suppliers/models/supplier.model';
 import { SupplierService } from '@suppliers/services';
 import { switchMap } from 'rxjs';
 import { updateSupplierApiEvents } from './events/supplier-api-events';
+import type { HttpErrorResponse } from '@angular/common/http';
+import type { IError } from '@app/common/models';
 
 interface UpdateSupplierState {
   updatedSupplier: ISupplier | null;
@@ -55,7 +57,11 @@ export const UpdateSupplierStore = signalStore(
                 ...payload.dto,
                 id: payload.id,
               } as ISupplier),
-            error: () => updateSupplierApiEvents.updatedFailure('Could not update supplier'),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to update supplier';
+              return updateSupplierApiEvents.updatedFailure(errorMessage);
+            },
           }),
         );
       }),
