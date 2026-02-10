@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ColorSchemeService } from '@common/utils';
-import type { IInventoryMovementsResponse } from '@inventory/models/inventory.model';
+import type {
+  IInventoryMovement,
+  IInventoryMovementsResponse,
+} from '@inventory/models/inventory.model';
 import { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
+import { DrawerModule } from 'primeng/drawer';
 import { Menu, MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
@@ -24,6 +28,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TooltipModule,
     AvatarModule,
     MenuModule,
+    DrawerModule,
   ],
   templateUrl: './inventory-movements-timeline.html',
   styleUrl: './inventory-movements-timeline.css',
@@ -34,25 +39,41 @@ export class InventoryMovementsTimeline {
   currentProductId = input<string | null>(null);
   inventoryMovementsResponse = input.required<IInventoryMovementsResponse>();
 
-  selectedMovementId = signal<string | null>(null);
+  selectedMovement = signal<IInventoryMovement | null>(null);
+  drawerVisible = signal(false);
   lastClickEvent = signal<Event | null>(null);
 
   menuItems: MenuItem[] = [
     {
+      label: 'View Details',
+      icon: 'pi pi-info-circle',
+      command: () => {
+        if (this.selectedMovement()) {
+          this.drawerVisible.set(true);
+        }
+      },
+    },
+    {
       label: 'Undo Movement',
       icon: 'pi pi-undo',
       command: () => {
-        const movementId = this.selectedMovementId();
+        const movement = this.selectedMovement();
         const event = this.lastClickEvent();
-        if (!movementId || !event) return;
-        this.undoMovement.emit({ movementId, event });
+        if (!movement || !event) return;
+        this.onUndoMovement(movement.id, event);
       },
     },
   ];
 
-  onMovementAction(event: Event, movementId: string, menu: Menu) {
-    this.selectedMovementId.set(movementId);
+  onMovementAction(event: Event, movement: IInventoryMovement, menu: Menu): void {
+    this.selectedMovement.set(movement);
     this.lastClickEvent.set(event);
     menu.toggle(event);
+  }
+
+  onUndoMovement(movementId: string, event: Event): void {
+    event.stopPropagation();
+    this.drawerVisible.set(false);
+    this.undoMovement.emit({ movementId, event });
   }
 }
