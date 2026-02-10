@@ -13,6 +13,7 @@ import type {
 import {
   DISCOUNT_PERCENT_VALIDATORS,
   EMovementType,
+  EPurchaseOrderStatus,
   PRODUCT_ID_VALIDATORS,
   PROFIT_MARGIN_PERCENTAGE_VALIDATORS,
   PURCHASE_PRICE_VALIDATORS,
@@ -89,6 +90,10 @@ export class InventoryMovementForm implements OnInit {
     { label: EMovementType.IN.toString(), value: EMovementType.IN },
     { label: EMovementType.OUT.toString(), value: EMovementType.OUT },
   ];
+  purchaseOrderStatusOptions: { label: string; value: EPurchaseOrderStatus }[] = [
+    { label: EPurchaseOrderStatus.PENDING.toString(), value: EPurchaseOrderStatus.PENDING },
+    { label: EPurchaseOrderStatus.COMPLETED.toString(), value: EPurchaseOrderStatus.COMPLETED },
+  ];
 
   // Form Builder
   private readonly fb: FormBuilder = inject(FormBuilder);
@@ -115,7 +120,7 @@ export class InventoryMovementForm implements OnInit {
   }
 
   private initializeMovementForm(): void {
-    this.inventoryMovementForm = this.fb.group({
+    this.inventoryMovementForm = this.fb.group<ICreateInventoryMovementForm>({
       productId: new FormControl<string>(this.currentProductId() ?? '', {
         nonNullable: true,
         validators: PRODUCT_ID_VALIDATORS,
@@ -139,6 +144,9 @@ export class InventoryMovementForm implements OnInit {
       supplierId: new FormControl<string | null>(null, {
         validators: SUPPLIER_ID_VALIDATORS,
       }),
+      purchaseOrderStatus: new FormControl<EPurchaseOrderStatus | null>(
+        EPurchaseOrderStatus.COMPLETED,
+      ),
     });
   }
 
@@ -153,6 +161,7 @@ export class InventoryMovementForm implements OnInit {
       salePrice,
       discountPercent,
       supplierId,
+      purchaseOrderStatus,
     } = this.inventoryMovementForm.value;
     // Validate required fields
     if (!productId) throw new Error('Product ID is required');
@@ -173,6 +182,7 @@ export class InventoryMovementForm implements OnInit {
         quantity: quantity ?? 1,
         discountPercent: discountPercent ?? null,
         supplierId: supplierId ?? null,
+        purchaseOrderStatus: purchaseOrderStatus ?? EPurchaseOrderStatus.COMPLETED,
       };
       this.dispatcher.dispatch(createNewOutInventoryMovementApiEvents.createOut(outMovementDto));
     }
@@ -184,7 +194,10 @@ export class InventoryMovementForm implements OnInit {
   }
 
   onMovementTypeChange({ value }: any): void {
-    this.inventoryMovementForm.reset();
+    this.inventoryMovementForm.reset({
+      productId: this.inventoryMovementForm.controls.productId.value,
+      purchaseOrderStatus: EPurchaseOrderStatus.COMPLETED,
+    });
     if (value === EMovementType.IN) {
       // Clear OUT movement validators
       this.inventoryMovementForm.controls['discountPercent'].setValidators(null);

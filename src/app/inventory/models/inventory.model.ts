@@ -9,6 +9,11 @@ export enum EMovementType {
   ALL = 'ALL',
 }
 
+export enum EPurchaseOrderStatus {
+  PENDING = 'PENDING',
+  COMPLETED = 'COMPLETED',
+}
+
 export interface IInventoryRecord {
   id: string;
   product: IProduct;
@@ -32,6 +37,7 @@ export interface ICreateOutInventoryMovementDto {
   quantity: number;
   discountPercent: number | null;
   supplierId: string | null;
+  purchaseOrderStatus: EPurchaseOrderStatus;
 }
 
 export interface IInventoryMovementQueryDto {
@@ -63,6 +69,7 @@ export interface IInventoryMovement {
   purchasePrice: number | null;
   salePrice: number;
   supplier: ISupplier | null;
+  purchaseOrderStatus: EPurchaseOrderStatus | null;
   createdAt: string;
 }
 
@@ -74,6 +81,7 @@ export interface ICreateInventoryMovementForm {
   discountPercent: FormControl<number | null>;
   salePrice: FormControl<number | null>;
   supplierId: FormControl<string | null>;
+  purchaseOrderStatus: FormControl<EPurchaseOrderStatus | null>;
 }
 
 export interface ICreateInventoryMovementResult {
