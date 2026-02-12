@@ -12,6 +12,7 @@ import {
   createNewInInventoryMovementApiEvents,
   createNewOutInventoryMovementApiEvents,
   getAllInventoryMovementsApiEvents,
+  InventoryMovementStore,
   InventoryStore,
   UndoInventoryMovementStore,
   undoMovementApiEvents,
@@ -47,6 +48,7 @@ import { InventoryDialogService } from '@inventory/services';
 export class InventoryMovementsPage {
   // Dependencies
   inventoryStore = inject(InventoryStore);
+  inventoryMovementStore = inject(InventoryMovementStore);
   dispatcher = inject(Dispatcher);
   events = inject(Events);
   messageService = inject(MessageService);
@@ -56,9 +58,9 @@ export class InventoryMovementsPage {
   // Signals
   movementQueryDto = signal<IInventoryMovementQueryDto>(INITIAL_MOVEMENT_QUERY_DTO);
   // Computed signals
-  currentProductId = computed<string | null>(() => this.inventoryStore.selectedProductId());
+  currentProductId = computed<string | null>(() => this.inventoryMovementStore.selectedProductId());
   inventoryMovementsResponse = computed<IInventoryMovementsResponse>(() =>
-    this.inventoryStore.inventoryMovementsResponse(),
+    this.inventoryMovementStore.inventoryMovementsResponse(),
   );
 
   constructor() {
@@ -125,9 +127,10 @@ export class InventoryMovementsPage {
   }
 
   onLoadMore() {
-    const totalRecords: number = this.inventoryStore.inventoryMovementsResponse().totalRecords;
+    const totalRecords: number =
+      this.inventoryMovementStore.inventoryMovementsResponse().totalRecords;
     const currentMovements: IInventoryMovement[] =
-      this.inventoryStore.inventoryMovementsResponse().movements;
+      this.inventoryMovementStore.inventoryMovementsResponse().movements;
     if (currentMovements.length >= totalRecords) return;
     this.movementQueryDto.update((state) => ({
       ...state,
