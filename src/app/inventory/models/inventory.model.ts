@@ -40,6 +40,10 @@ export interface ICreateOutInventoryMovementDto {
   purchaseOrderStatus: EPurchaseOrderStatus;
 }
 
+export interface IUpdateInventoryMovementStatusDto {
+  purchaseOrderStatus: EPurchaseOrderStatus;
+}
+
 export interface IInventoryMovementQueryDto {
   productId: string;
   orderBy?: EOrderBy;

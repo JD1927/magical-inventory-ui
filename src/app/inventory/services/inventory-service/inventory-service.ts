@@ -9,6 +9,7 @@ import type {
   IInventoryMovementQueryDto,
   IInventoryMovementsResponse,
   IInventoryRecord,
+  IUpdateInventoryMovementStatusDto,
 } from '@inventory/models/inventory.model';
 import type { Observable } from 'rxjs';
 
@@ -61,6 +62,13 @@ export class InventoryService {
 
   undoMovementById(id: string): Observable<IInventoryMovement> {
     return this.http.delete<IInventoryMovement>(`${API_INVENTORY}/movement/${id}`);
+  }
+
+  updateMovementStatus(
+    id: string,
+    dto: IUpdateInventoryMovementStatusDto,
+  ): Observable<IInventoryMovement> {
+    return this.http.patch<IInventoryMovement>(`${API_INVENTORY}/movement/out/${id}`, dto);
   }
 
   private getProductMovementsParams(dto: IInventoryMovementQueryDto) {

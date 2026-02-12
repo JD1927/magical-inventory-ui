@@ -5,6 +5,8 @@ import type {
   IInventoryMovementQueryDto,
   IInventoryMovementsResponse,
   IInventoryRecord,
+  IInventoryMovement,
+  IUpdateInventoryMovementStatusDto,
 } from '@inventory/models/inventory.model';
 import { type } from '@ngrx/signals';
 import { eventGroup } from '@ngrx/signals/events';
@@ -43,6 +45,15 @@ export const createNewOutInventoryMovementApiEvents = eventGroup({
     createOut: type<ICreateOutInventoryMovementDto>(),
     createdSuccess: type<ICreateInventoryMovementResult>(),
     createdFailure: type<string>(),
+  },
+});
+
+export const updateInventoryMovementStatusApiEvents = eventGroup({
+  source: 'Update Inventory Movement Status API',
+  events: {
+    update: type<{ id: string; dto: IUpdateInventoryMovementStatusDto }>(),
+    updatedSuccess: type<IInventoryMovement>(),
+    updatedFailure: type<string>(),
   },
 });
 
