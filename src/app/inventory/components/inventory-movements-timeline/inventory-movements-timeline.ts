@@ -10,11 +10,11 @@ import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
-import { DrawerModule } from 'primeng/drawer';
 import { Menu, MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { TooltipModule } from 'primeng/tooltip';
+import { InventoryMovementDetail } from '../inventory-movement-detail/inventory-movement-detail';
 
 @Component({
   selector: 'app-inventory-movements-timeline',
@@ -28,7 +28,7 @@ import { TooltipModule } from 'primeng/tooltip';
     TooltipModule,
     AvatarModule,
     MenuModule,
-    DrawerModule,
+    InventoryMovementDetail,
   ],
   templateUrl: './inventory-movements-timeline.html',
   styleUrl: './inventory-movements-timeline.css',

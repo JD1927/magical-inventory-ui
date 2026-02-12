@@ -1,0 +1,89 @@
+<p-drawer [(visible)]="visible" position="right" [style]="{ width: '400px' }">
+  @if (movement(); as movement) {
+    @let isInMovement = movement?.type === 'IN';
+    @let movementType = isInMovement ? 'INBOUND' : 'OUTBOUND';
+    @let iconType = isInMovement ? 'pi pi-cart-plus' : 'pi pi-cart-minus';
+    @let severity = isInMovement ? 'success' : 'danger';
+    <!-- HEADER -->
+    <ng-template #header>
+      <h3 class="block text-xl font-bold">Movement Details</h3>
+    </ng-template>
+    <p-divider />
+    <!-- BODY -->
+    <div class="grid gap-2">
+      <div>
+        <p class="text-sm text-gray-500">Product name</p>
+        <p class="font-medium">{{ movement.product.name }}</p>
+      </div>
+      <p-divider />
+      <div>
+        <p class="text-sm text-gray-500">Product code</p>
+        <p class="font-medium">{{ movement.product.sku }}</p>
+      </div>
+      <p-divider />
+      <div>
+        <p class="text-sm text-gray-500">Movement type</p>
+        <p-tag [severity]="severity" [value]="movementType" [icon]="iconType" />
+      </div>
+      <p-divider />
+      <div>
+        <p class="text-sm text-gray-500">Quantity</p>
+        <p class="font-medium">{{ movement.quantity }}</p>
+      </div>
+      <p-divider />
+      @if (isInMovement) {
+        <div>
+          <p class="text-sm text-gray-500">Purchase price</p>
+          <p class="font-medium">{{ movement.purchasePrice | currency }}</p>
+        </div>
+      } @else {
+        <div>
+          <p class="text-sm text-gray-500">Sale price</p>
+          <p class="font-medium">{{ movement.salePrice | currency }}</p>
+        </div>
+      }
+      <p-divider />
+      <div>
+        <p class="text-sm text-gray-500">Date of movement</p>
+        <p class="font-medium">{{ movement.createdAt | date: 'mediumDate' }}</p>
+      </div>
+      @if (isInMovement) {
+        <p-divider />
+        <div>
+          <p class="text-sm text-gray-500">Supplier</p>
+          <p class="font-medium">{{ movement.supplier?.name }}</p>
+          <p class="text-xs text-gray-400">{{ movement.supplier?.email }}</p>
+        </div>
+      }
+      @if (movement.purchaseOrderStatus) {
+        <p-divider />
+        <div>
+          <p class="text-sm text-gray-500 mb-1">Purchase order status</p>
+          <p-select
+            [options]="purchaseOrderStatusOptions"
+            [ngModel]="movement.purchaseOrderStatus"
+            (ngModelChange)="onStatusChange($event)"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+            class="w-full"
+          />
+        </div>
+      }
+    </div>
+    <!-- FOOTER -->
+    <p-divider />
+    <ng-template #footer>
+      <div class="flex items-center justify-center gap-2">
+        <p-button
+          [label]="'Undo movement'"
+          [icon]="'pi pi-undo'"
+          [rounded]="false"
+          [severity]="'danger'"
+          [outlined]="true"
+          (click)="onUndoMovement(movement.id, $event)"
+        />
+      </div>
+    </ng-template>
+  }
+</p-drawer>
