@@ -25,6 +25,7 @@ import { ToastModule } from 'primeng/toast';
       [productListResponse]="productsStore.productListResponse()"
       (updateProduct)="onUpdateProduct($event)"
       (deleteProduct)="onDeleteProduct($event)"
+      (search)="onSearch($event)"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -110,5 +111,10 @@ export class ProductListPage implements OnInit {
       if (!isConfirmation) return;
       this.dispatcher.dispatch(deleteProductApiEvents.delete(productId));
     });
+  }
+
+  onSearch(term: string): void {
+    this.dispatcher.dispatch(getAllProductsApiEvents.setTerm(term));
+    this.dispatcher.dispatch(getAllProductsApiEvents.load());
   }
 }

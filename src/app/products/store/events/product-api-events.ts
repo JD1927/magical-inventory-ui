@@ -11,6 +11,7 @@ export const getAllProductsApiEvents = eventGroup({
   source: 'Get All Products API',
   events: {
     load: type<void>(),
+    setTerm: type<string | undefined>(),
     loadedSuccess: type<IProductListResponse>(),
     loadedFailure: type<string>(),
   },

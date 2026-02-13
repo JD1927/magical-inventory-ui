@@ -22,6 +22,7 @@ const initialState: ProductsState = {
   productListResponse: {
     limit: 0,
     offset: 0,
+    term: undefined,
     products: [],
     totalRecords: 0,
   },
@@ -41,11 +42,16 @@ export const ProductsStore = signalStore(
       errorMessage: null,
       successMessage: null,
     })),
+    on(getAllProductsApiEvents.setTerm, ({ payload: term }, state) => ({
+      ...state,
+      pagination: { ...state.pagination, term, offset: 0 },
+    })),
     on(getAllProductsApiEvents.loadedSuccess, ({ payload: response }, state) => ({
       ...state,
       productListResponse: {
         limit: response.limit,
         offset: response.offset,
+        term: response.term,
         products: response.products,
         totalRecords: response.totalRecords,
       },
@@ -66,7 +72,8 @@ export const ProductsStore = signalStore(
         const pagination = state.pagination();
         const limit = pagination?.limit ?? ELimitSettings.DEFAULT;
         const offset = pagination?.offset ?? 0;
-        return service.getAllWithParams(limit, offset).pipe(
+        const term = pagination?.term;
+        return service.getAllWithParams(limit, offset, term).pipe(
           mapResponse({
             next: (products) => getAllProductsApiEvents.loadedSuccess(products),
             error: (error: HttpErrorResponse) => {

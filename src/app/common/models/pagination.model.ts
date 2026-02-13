@@ -1,6 +1,7 @@
 export interface IPaginationDto {
   limit: number;
   offset: number;
+  term?: string;
 }
 
 export enum EOrderBy {

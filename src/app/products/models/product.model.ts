@@ -19,6 +19,7 @@ export interface IProduct {
 export interface IProductListResponse {
   limit: number;
   offset: number;
+  term?: string;
   products: IProduct[];
   totalRecords: number;
 }

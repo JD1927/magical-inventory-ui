@@ -25,8 +25,11 @@ export class ProductService {
   getAllWithParams(
     limit: number = ELimitSettings.DEFAULT,
     offset = 0,
+    term?: string,
   ): Observable<IProductListResponse> {
-    return this.http.get<IProductListResponse>(API_PRODUCTS, { params: { limit, offset } });
+    const params: any = { limit, offset };
+    if (term) params.term = term;
+    return this.http.get<IProductListResponse>(API_PRODUCTS, { params });
   }
 
   getById(id: string): Observable<IProduct> {

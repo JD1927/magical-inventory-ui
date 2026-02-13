@@ -1,5 +1,31 @@
-<p-table [value]="productListResponse().products" [rows]="15" [rowHover]="true" [showCurrentPageReport]="true"
-  [scrollable]="true" [size]="'large'">
+<p-table
+  [value]="productListResponse().products"
+  [rows]="15"
+  [rowHover]="true"
+  [showCurrentPageReport]="true"
+  [scrollable]="true"
+  [size]="'large'"
+>
+  <ng-template #caption>
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <h2 class="text-xl font-bold m-0">Inventory Products</h2>
+      <p-iconfield>
+        @let term = productListResponse().term ?? '';
+        <p-inputicon class="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          (input)="onSearch($event)"
+          placeholder="Search by name, SKU or ID..."
+          class="w-80"
+          [value]="term"
+        />
+        @if (term) {
+          <p-inputicon class="pi pi-times cursor-pointer" (click)="onClearSearch()" />
+        }
+      </p-iconfield>
+    </div>
+  </ng-template>
   <ng-template #header>
     <tr>
       <th>Product SKU</th>
@@ -21,10 +47,10 @@
           @let mainCategory = product?.mainCategory;
           @let secondaryCategory = product?.secondaryCategory;
           @if (mainCategory) {
-          <p-tag icon="pi pi-tag" [value]="mainCategory.name" />
+            <p-tag icon="pi pi-tag" [value]="mainCategory.name" />
           }
           @if (secondaryCategory) {
-          <p-tag icon="pi pi-tag" severity="secondary" [value]="secondaryCategory.name" />
+            <p-tag icon="pi pi-tag" severity="secondary" [value]="secondaryCategory.name" />
           }
         </div>
       </td>
@@ -32,19 +58,35 @@
       <td>{{ product.currentPurchasePrice | currency }}</td>
       <td>
         @let tooltipMessage = product.isActive ? 'Active' : 'Inactive';
-        <i [pTooltip]="tooltipMessage" class="pi" [ngClass]="{
+        <i
+          [pTooltip]="tooltipMessage"
+          class="pi"
+          [ngClass]="{
             'text-green-500 pi-check-circle': product.isActive,
-            'text-red-500 pi-times-circle': !product.isActive
-          }">
+            'text-red-500 pi-times-circle': !product.isActive,
+          }"
+        >
         </i>
       </td>
       <td>{{ product.updatedAt | date: 'mediumDate' }}</td>
       <td>
         <div class="flex gap-2">
-          <p-button (onClick)="updateProduct.emit(product.id)" icon="pi pi-pencil" severity="warn"
-            aria-label="Update product" size="small" pTooltip="Update product" />
-          <p-button (onClick)="onDelete(product.id, $event)" icon="pi pi-trash" severity="danger"
-            aria-label="Delete product" size="small" pTooltip="Delete product" />
+          <p-button
+            (onClick)="updateProduct.emit(product.id)"
+            icon="pi pi-pencil"
+            severity="warn"
+            aria-label="Update product"
+            size="small"
+            pTooltip="Update product"
+          />
+          <p-button
+            (onClick)="onDelete(product.id, $event)"
+            icon="pi pi-trash"
+            severity="danger"
+            aria-label="Delete product"
+            size="small"
+            pTooltip="Delete product"
+          />
         </div>
       </td>
     </tr>
