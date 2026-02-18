@@ -28,7 +28,7 @@ import { DialogService } from 'primeng/dynamicdialog';
         <span class="hidden md:inline-block" pButtonLabel>Add Inventory Movement</span>
       </button>
     </div>
-    <div class="page-content">
+    <div class="card">
       <app-inventory-table
         [inventoryRecords]="inventoryStore.inventoryRecords()"
         (viewProductMovements)="onViewProductMovements($event)"

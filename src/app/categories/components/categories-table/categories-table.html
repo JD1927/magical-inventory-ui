@@ -1,5 +1,12 @@
-<p-table [value]="categories()" [rows]="10" [rowHover]="true" [showCurrentPageReport]="true" [scrollable]="true"
-  [size]="'large'">
+<p-table
+  [value]="categories()"
+  [rows]="10"
+  [rowHover]="true"
+  [showCurrentPageReport]="true"
+  [scrollable]="true"
+  scrollHeight="calc(100vh - 420px)"
+  [size]="'large'"
+>
   <ng-template #header>
     <tr>
       <th>Name</th>
@@ -12,21 +19,34 @@
   <ng-template #body let-category>
     <tr>
       <td>{{ category.name }}</td>
-      <td [pTooltip]="category.description" tooltipPosition="bottom">{{ category.description | truncate: 50 }}</td>
+      <td [pTooltip]="category.description" tooltipPosition="bottom">
+        {{ category.description | truncate: 50 }}
+      </td>
       <td>
         @if (category.isMain) {
-        <p-tag icon="pi pi-circle-on" value="Primary" />
+          <p-tag icon="pi pi-circle-on" value="Primary" />
         } @else {
-        <p-tag icon="pi pi-circle-off" severity="secondary" value="Secondary" />
+          <p-tag icon="pi pi-circle-off" severity="secondary" value="Secondary" />
         }
       </td>
       <td>{{ category.updatedAt | date: 'mediumDate' }}</td>
       <td>
         <div class="flex gap-2">
-          <p-button (onClick)="updateCategory.emit(category.id)" icon="pi pi-pencil" severity="warn"
-            aria-label="Update category" size="small" pTooltip="Update category" />
-          <p-button (onClick)="onDelete(category.id, $event)" icon="pi pi-trash" severity="danger"
-            aria-label="Delete category" size="small" />
+          <p-button
+            (onClick)="updateCategory.emit(category.id)"
+            icon="pi pi-pencil"
+            severity="warn"
+            aria-label="Update category"
+            size="small"
+            pTooltip="Update category"
+          />
+          <p-button
+            (onClick)="onDelete(category.id, $event)"
+            icon="pi pi-trash"
+            severity="danger"
+            aria-label="Delete category"
+            size="small"
+          />
         </div>
       </td>
     </tr>

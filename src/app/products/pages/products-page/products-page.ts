@@ -24,7 +24,7 @@ import { TooltipModule } from 'primeng/tooltip';
         </button>
       </div>
     </app-page-header>
-    <div class="card page-content">
+    <div class="card">
       <router-outlet />
     </div>
   `,
