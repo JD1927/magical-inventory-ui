@@ -12,6 +12,7 @@ export const getAllProductsApiEvents = eventGroup({
   events: {
     load: type<void>(),
     setTerm: type<string | undefined>(),
+    setPagination: type<{ offset: number; limit: number }>(),
     loadedSuccess: type<IProductListResponse>(),
     loadedFailure: type<string>(),
   },

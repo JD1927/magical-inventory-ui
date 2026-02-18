@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import type { OnInit } from '@angular/core';
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ProductDialogService } from '@app/products/services';
+import { IPaginationDto } from '@common/models';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductsTable } from '@products/components';
+import { ProductDialogService } from '@products/services';
 import {
   deleteProductApiEvents,
   DeleteProductStore,
@@ -26,11 +26,12 @@ import { ToastModule } from 'primeng/toast';
       (updateProduct)="onUpdateProduct($event)"
       (deleteProduct)="onDeleteProduct($event)"
       (search)="onSearch($event)"
+      (paginate)="onPaginate($event)"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProductListPage implements OnInit {
+export class ProductListPage {
   productsStore = inject(ProductsStore);
   deleteProductStore = inject(DeleteProductStore);
   dispatcher = inject(Dispatcher);
@@ -47,10 +48,6 @@ export class ProductListPage implements OnInit {
       }
     });
     this.listenToProductListChanges();
-  }
-
-  ngOnInit(): void {
-    this.dispatcher.dispatch(getAllProductsApiEvents.load());
   }
 
   private listenToProductListChanges(): void {
@@ -115,6 +112,11 @@ export class ProductListPage implements OnInit {
 
   onSearch(term: string): void {
     this.dispatcher.dispatch(getAllProductsApiEvents.setTerm(term));
+    this.dispatcher.dispatch(getAllProductsApiEvents.load());
+  }
+
+  onPaginate({ offset, limit }: IPaginationDto): void {
+    this.dispatcher.dispatch(getAllProductsApiEvents.setPagination({ offset, limit }));
     this.dispatcher.dispatch(getAllProductsApiEvents.load());
   }
 }

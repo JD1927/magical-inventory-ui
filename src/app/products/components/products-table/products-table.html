@@ -1,9 +1,18 @@
 <p-table
   [value]="productListResponse().products"
-  [rows]="15"
+  [rows]="productListResponse().limit"
+  [totalRecords]="productListResponse().totalRecords"
+  [lazy]="true"
+  (onLazyLoad)="onLazyLoad($event)"
+  [first]="productListResponse().offset"
+  [paginator]="true"
+  [paginatorPosition]="'bottom'"
+  [rowsPerPageOptions]="[10, 20, 50]"
   [rowHover]="true"
   [showCurrentPageReport]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
   [scrollable]="true"
+  scrollHeight="calc(100vh - 420px)"
   [size]="'large'"
 >
   <ng-template #caption>

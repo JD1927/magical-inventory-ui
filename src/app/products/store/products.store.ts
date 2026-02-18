@@ -46,6 +46,10 @@ export const ProductsStore = signalStore(
       ...state,
       pagination: { ...state.pagination, term, offset: 0 },
     })),
+    on(getAllProductsApiEvents.setPagination, ({ payload: { offset, limit } }, state) => ({
+      ...state,
+      pagination: { ...state.pagination, offset, limit },
+    })),
     on(getAllProductsApiEvents.loadedSuccess, ({ payload: response }, state) => ({
       ...state,
       productListResponse: {
