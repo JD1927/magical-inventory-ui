@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ELimitSettings } from '@app/common/models/pagination.model';
+import { ELimitSettings } from '@common/models/pagination.model';
 import { InventoryMovementForm, InventoryMovementsTimeline } from '@inventory/components';
 import type {
   IInventoryMovement,
