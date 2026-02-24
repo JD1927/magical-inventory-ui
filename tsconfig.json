@@ -5,33 +5,16 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@app/*": [
-        "src/app/*"
-      ],
-      "@environments/*": [
-        "src/environments/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@products/*": [
-        "src/app/products/*"
-      ],
-      "@categories/*": [
-        "src/app/categories/*"
-      ],
-      "@suppliers/*": [
-        "src/app/suppliers/*"
-      ],
-      "@inventory/*": [
-        "src/app/inventory/*"
-      ],
-      "@common/*": [
-        "src/app/common/*"
-      ],
-      "@dashboard/*": [
-        "src/app/dashboard/*"
-      ]
+      "@app/*": ["src/app/*"],
+      "@environments/*": ["src/environments/*"],
+      "@assets/*": ["src/assets/*"],
+      "@products/*": ["src/app/products/*"],
+      "@categories/*": ["src/app/categories/*"],
+      "@suppliers/*": ["src/app/suppliers/*"],
+      "@inventory/*": ["src/app/inventory/*"],
+      "@common/*": ["src/app/common/*"],
+      "@dashboard/*": ["src/app/dashboard/*"],
+      "@users/*": ["src/app/users/*"]
     },
     "strict": true,
     "noImplicitOverride": true,
