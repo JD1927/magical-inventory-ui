@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import type { ApplicationConfig } from '@angular/core';
 import { provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -8,13 +8,14 @@ import { providePrimeNG } from 'primeng/config';
 import { DialogService } from 'primeng/dynamicdialog';
 import { APP_ROUTES } from './app.routes';
 import { EmeraldStaleKindi } from './preset.prime';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(APP_ROUTES, withComponentInputBinding()),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([jwtInterceptor])),
     // Added for PrimeNG
     DialogService,
     ConfirmationService,
