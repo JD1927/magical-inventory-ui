@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IPaginationDto } from '@common/models';
+import type { IPaginationDto } from '@common/models';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ProductsTable } from '@products/components';
 import { ProductDialogService } from '@products/services';

@@ -35,6 +35,9 @@ importers:
       '@primeuix/themes':
         specifier: ^1.2.3
         version: 1.2.5
+      '@simplewebauthn/browser':
+        specifier: ^13.2.2
+        version: 13.2.2
       '@tailwindcss/postcss':
         specifier: ^4.1.13
         version: 4.1.17
@@ -1328,6 +1331,9 @@ packages:
   '@sigstore/verify@2.1.1':
     resolution: {integrity: sha512-hVJD77oT67aowHxwT4+M6PGOp+E2LtLdTK3+FC0lBO9T7sYwItDMXZ7Z07IDCvR1M717a4axbIWckrW67KMP/w==}
     engines: {node: ^18.17.0 || >=20.5.0}
+
+  '@simplewebauthn/browser@13.2.2':
+    resolution: {integrity: sha512-FNW1oLQpTJyqG5kkDg5ZsotvWgmBaC6jCHR7Ej0qUNep36Wl9tj2eZu7J5rP+uhXgHaLk+QQ3lqcw2vS5MX1IA==}
 
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
@@ -4741,6 +4747,8 @@ snapshots:
       '@sigstore/bundle': 3.1.0
       '@sigstore/core': 2.0.0
       '@sigstore/protobuf-specs': 0.4.3
+
+  '@simplewebauthn/browser@13.2.2': {}
 
   '@socket.io/component-emitter@3.1.2': {}
 

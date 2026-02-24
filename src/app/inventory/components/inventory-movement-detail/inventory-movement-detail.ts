@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, input, model, output } from '@angular/core';
-import { EPurchaseOrderStatus, IInventoryMovement } from '@inventory/models/inventory.model';
+import type { IInventoryMovement } from '@inventory/models/inventory.model';
+import { EPurchaseOrderStatus } from '@inventory/models/inventory.model';
 import { updateInventoryMovementStatusApiEvents } from '@inventory/store';
 import { Dispatcher } from '@ngrx/signals/events';
 import { ButtonModule } from 'primeng/button';

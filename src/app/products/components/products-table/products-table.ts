@@ -5,13 +5,15 @@ import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import type { IProductListResponse } from '@products/models/product.model';
 import { ButtonModule } from 'primeng/button';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
+import type { TableLazyLoadEvent } from 'primeng/table';
+import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { ELimitSettings, IPaginationDto } from '@common/models';
+import type { IPaginationDto } from '@common/models';
+import { ELimitSettings } from '@common/models';
 
 @Component({
   selector: 'app-products-table',

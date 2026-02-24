@@ -5,12 +5,13 @@ import type {
   IInventoryMovement,
   IInventoryMovementsResponse,
 } from '@inventory/models/inventory.model';
-import { MenuItem } from 'primeng/api';
+import type { MenuItem } from 'primeng/api';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { DividerModule } from 'primeng/divider';
-import { Menu, MenuModule } from 'primeng/menu';
+import type { Menu } from 'primeng/menu';
+import { MenuModule } from 'primeng/menu';
 import { TagModule } from 'primeng/tag';
 import { TimelineModule } from 'primeng/timeline';
 import { TooltipModule } from 'primeng/tooltip';
