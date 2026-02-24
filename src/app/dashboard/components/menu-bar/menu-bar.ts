@@ -6,9 +6,13 @@ import { AvatarModule } from 'primeng/avatar';
 import { Button } from 'primeng/button';
 import { MenubarModule } from 'primeng/menubar';
 
+import { AuthService } from '@app/core/auth/auth.service';
+import { computed } from '@angular/core';
+import { Tooltip } from 'primeng/tooltip';
+
 @Component({
   selector: 'app-menu-bar',
-  imports: [CommonModule, MenubarModule, AvatarModule, Button],
+  imports: [CommonModule, MenubarModule, AvatarModule, Button, Tooltip],
   template: `
     <div class="card">
       <p-menubar [model]="menuItems()">
@@ -20,18 +24,46 @@ import { MenubarModule } from 'primeng/menubar';
             class="mr-4"
             [icon]="colorSchemeService.isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
             [text]="true"
+            pTooltip="Toggle color scheme"
+            tooltipPosition="bottom"
             aria-label="Toggle color scheme"
             (click)="colorSchemeService.onToggleDarkMode()"
           />
-          <p-avatar label="M" class="mr-2" shape="circle" />
+          <p-button
+            icon="pi pi-sign-out"
+            aria-label="Logout"
+            pTooltip="Logout"
+            tooltipPosition="bottom"
+            [severity]="'danger'"
+            [outlined]="true"
+            size="small"
+            (click)="logout()"
+          />
         </ng-template>
       </p-menubar>
     </div>
   `,
 })
 export class MenuBar {
-  menuItems = signal<MenuItem[]>(TOP_BAR_MENU_ITEMS);
+  private authService = inject(AuthService);
   colorSchemeService = inject(ColorSchemeService);
+
+  menuItems = computed(() => {
+    const items = [...TOP_BAR_MENU_ITEMS];
+    if (this.authService.user()?.role === 'admin') {
+      items.push({
+        automationId: 'users-item',
+        label: 'Users',
+        icon: PrimeIcons.USERS,
+        routerLink: '/dashboard/users',
+      });
+    }
+    return items;
+  });
+
+  logout(): void {
+    this.authService.logout();
+  }
 }
 
 export const TOP_BAR_MENU_ITEMS: MenuItem[] = [

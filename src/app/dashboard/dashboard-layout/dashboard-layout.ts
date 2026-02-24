@@ -8,7 +8,15 @@ import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-dashboard-layout',
-  imports: [CommonModule, RippleModule, MenuBar, RouterOutlet, BreadcrumbComponent, ToastModule, ConfirmDialogModule],
+  imports: [
+    CommonModule,
+    RippleModule,
+    MenuBar,
+    RouterOutlet,
+    BreadcrumbComponent,
+    ToastModule,
+    ConfirmDialogModule,
+  ],
   template: `
     <main class="flex flex-col h-dvh scroll-smooth overflow-x-hidden">
       <nav class="w-full">
@@ -27,4 +35,4 @@ import { ToastModule } from 'primeng/toast';
     </main>
   `,
 })
-export class DashboardLayout { }
+export class DashboardLayout {}
