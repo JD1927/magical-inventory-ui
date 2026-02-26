@@ -11,5 +11,8 @@ export const userApiEvents = eventGroup({
     toggleActive: type<string>(), // userId
     toggledSuccess: type<IUser>(),
     toggledFailure: type<string>(),
+    delete: type<string>(), // userId
+    deletedSuccess: type<string>(), // userId
+    deletedFailure: type<string>(),
   },
 });

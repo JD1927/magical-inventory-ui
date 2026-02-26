@@ -54,6 +54,20 @@ export const UsersStore = signalStore(
       loading: false,
       errorMessage,
     })),
+    on(userApiEvents.delete, (_, state) => ({
+      ...state,
+      loading: true,
+    })),
+    on(userApiEvents.deletedSuccess, ({ payload: userId }, state) => ({
+      ...state,
+      users: state.users.filter((u) => u.id !== userId),
+      loading: false,
+    })),
+    on(userApiEvents.deletedFailure, ({ payload: errorMessage }, state) => ({
+      ...state,
+      loading: false,
+      errorMessage,
+    })),
   ),
   withEffects((_state, events = inject(Events), service = inject(UsersService)) => ({
     loadUsers$: events.on(userApiEvents.load).pipe(
@@ -78,6 +92,19 @@ export const UsersStore = signalStore(
               const errorMessage =
                 (error.error as IError)?.message || 'Failed to toggle user status';
               return userApiEvents.toggledFailure(errorMessage);
+            },
+          }),
+        ),
+      ),
+    ),
+    deleteUser$: events.on(userApiEvents.delete).pipe(
+      switchMap(({ payload: userId }) =>
+        service.deleteUser(userId).pipe(
+          mapResponse({
+            next: () => userApiEvents.deletedSuccess(userId),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage = (error.error as IError)?.message || 'Failed to delete user';
+              return userApiEvents.deletedFailure(errorMessage);
             },
           }),
         ),
