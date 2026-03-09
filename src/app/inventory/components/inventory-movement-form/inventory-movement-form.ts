@@ -29,7 +29,7 @@ import {
   InventoryStore,
 } from '@inventory/store';
 import { Dispatcher } from '@ngrx/signals/events';
-import { ProductsStore } from '@products/store';
+import { getAllActiveProductsApiEvents, ProductsStore } from '@products/store';
 import { getAllSuppliersApiEvents, SuppliersStore } from '@suppliers/store';
 import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -76,15 +76,6 @@ export class InventoryMovementForm implements OnInit {
   dispatcher = inject(Dispatcher);
   // Map Inventory Records to Products using the Product property
   inventoryMovementForm!: FormGroup<ICreateInventoryMovementForm>;
-  products = computed(() => {
-    if (this.inventoryStore.inventoryRecords().length === 0) {
-      this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
-      return;
-    }
-    return this.inventoryStore
-      .inventoryRecords()
-      .map((record: IInventoryRecord) => ({ ...record, ...record.product }));
-  });
   movementType = EMovementType.IN;
   options: any[] = [
     { label: EMovementType.IN.toString(), value: EMovementType.IN },
@@ -111,12 +102,12 @@ export class InventoryMovementForm implements OnInit {
 
   ngOnInit(): void {
     this.initializeMovementForm();
-    if (!this.isCalledFromDialog()) {
-      this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
-    }
-    if (this.supplierStore.suppliers().length === 0) {
-      this.dispatcher.dispatch(getAllSuppliersApiEvents.load());
-    }
+    // Make sure to load suppliers
+    this.dispatcher.dispatch(getAllSuppliersApiEvents.load());
+    // Make sure to load active products
+    this.dispatcher.dispatch(getAllActiveProductsApiEvents.load());
+    // Make sure to load inventory records
+    this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
   }
 
   private initializeMovementForm(): void {

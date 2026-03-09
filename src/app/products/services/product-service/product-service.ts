@@ -22,6 +22,10 @@ export class ProductService {
     return this.http.get<IProduct[]>(API_PRODUCTS);
   }
 
+  getAllActive(): Observable<IProduct[]> {
+    return this.http.get<IProduct[]>(`${API_PRODUCTS}/active`);
+  }
+
   getAllWithParams(
     limit: number = ELimitSettings.DEFAULT,
     offset = 0,

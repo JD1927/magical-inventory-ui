@@ -15,20 +15,20 @@
       <p-select
         id="productId"
         formControlName="productId"
-        [options]="products()"
+        [options]="productStore.activeProducts()"
         [invalid]="isInvalid('productId')"
         (onChange)="onProductSelectionChange($event.value)"
         [filter]="true"
         optionLabel="name"
         optionValue="id"
         placeholder="Select a Product"
+        [loading]="productStore.loading()"
         fluid
       >
         <ng-template let-product #item>
           <div class="flex items-center gap-2">
             <i class="pi pi-warehouse" style="color: var(--primary-color)"></i>
-            <span>{{ product.name }} - </span>
-            <span>Stock: {{ product.stock }}</span>
+            <span>{{ product.name }}</span>
           </div>
         </ng-template>
       </p-select>
