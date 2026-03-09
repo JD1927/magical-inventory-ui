@@ -18,6 +18,15 @@ export const getAllProductsApiEvents = eventGroup({
   },
 });
 
+export const getAllActiveProductsApiEvents = eventGroup({
+  source: 'Get All Active Products API',
+  events: {
+    load: type<void>(),
+    loadedSuccess: type<IProduct[]>(),
+    loadedFailure: type<string>(),
+  },
+});
+
 export const createNewProductApiEvents = eventGroup({
   source: 'Create New Product API',
   events: {

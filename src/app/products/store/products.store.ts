@@ -6,12 +6,14 @@ import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import type { IProductListResponse } from '@products/models/product.model';
 import { ProductService } from '@products/services';
 import { switchMap } from 'rxjs';
-import { getAllProductsApiEvents } from './events/product-api-events';
+import { getAllActiveProductsApiEvents, getAllProductsApiEvents } from './events/product-api-events';
 import type { HttpErrorResponse } from '@angular/common/http';
 import type { IError } from '@app/common/models';
+import type { IProduct } from '@products/models/product.model';
 
 interface ProductsState {
   productListResponse: IProductListResponse;
+  activeProducts: IProduct[];
   loading: boolean;
   successMessage: string | null;
   errorMessage: string | null;
@@ -26,6 +28,7 @@ const initialState: ProductsState = {
     products: [],
     totalRecords: 0,
   },
+  activeProducts: [],
   loading: false,
   successMessage: null,
   errorMessage: null,
@@ -69,6 +72,25 @@ export const ProductsStore = signalStore(
       errorMessage,
       successMessage: null,
     })),
+    on(getAllActiveProductsApiEvents.load, (_, state) => ({
+      ...state,
+      loading: true,
+      errorMessage: null,
+      successMessage: null,
+    })),
+    on(getAllActiveProductsApiEvents.loadedSuccess, ({ payload: activeProducts }, state) => ({
+      ...state,
+      activeProducts,
+      loading: false,
+      errorMessage: null,
+      successMessage: 'Active products loaded successfully',
+    })),
+    on(getAllActiveProductsApiEvents.loadedFailure, ({ payload: errorMessage }, state) => ({
+      ...state,
+      loading: false,
+      errorMessage,
+      successMessage: null,
+    })),
   ),
   withEffects((state, events = inject(Events), service = inject(ProductService)) => ({
     loadProducts$: events.on(getAllProductsApiEvents.load).pipe(
@@ -84,6 +106,20 @@ export const ProductsStore = signalStore(
               const errorMessage: string =
                 (error.error as IError)?.message || 'Failed to load products';
               return getAllProductsApiEvents.loadedFailure(errorMessage);
+            },
+          }),
+        );
+      }),
+    ),
+    loadActiveProducts$: events.on(getAllActiveProductsApiEvents.load).pipe(
+      switchMap(() => {
+        return service.getAllActive().pipe(
+          mapResponse({
+            next: (products) => getAllActiveProductsApiEvents.loadedSuccess(products),
+            error: (error: HttpErrorResponse) => {
+              const errorMessage: string =
+                (error.error as IError)?.message || 'Failed to load active products';
+              return getAllActiveProductsApiEvents.loadedFailure(errorMessage);
             },
           }),
         );
