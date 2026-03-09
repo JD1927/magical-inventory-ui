@@ -11,12 +11,12 @@ import {
 } from '@inventory/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
+import { CreateInventoryMovementStore } from '@inventory/store/create-inventory-movement.store';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-inventory-page',
   imports: [CommonModule, RouterOutlet, PageHeader, ButtonModule],
-  providers: [InventoryDialogService, DialogService],
   template: `
     <app-page-header title="Inventory" description="Manage your inventory records" />
     <div class="card relative">
@@ -28,6 +28,8 @@ export class InventoryPage {
   inventoryDialogService = inject(InventoryDialogService);
   events = inject(Events);
   dispatcher = inject(Dispatcher);
+  messageService = inject(MessageService);
+  createInventoryMovementStore = inject(CreateInventoryMovementStore);
 
   constructor() {
     this.listenToInventoryEvents();
@@ -41,8 +43,15 @@ export class InventoryPage {
       )
       .pipe(takeUntilDestroyed())
       .subscribe(() => {
-        // Refresh supplier list
+        // Refresh inventory records list
         this.dispatcher.dispatch(getAllInventoryRecordsApiEvents.load());
+        // Show success toast
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Inventory Movement',
+          detail: this.createInventoryMovementStore.successMessage() ?? 'Operation successful',
+        });
+        // Close dialog if form was opened that way
         this.inventoryDialogService.closeDialog();
       });
 
@@ -53,6 +62,12 @@ export class InventoryPage {
       )
       .pipe(takeUntilDestroyed())
       .subscribe(({ payload }) => {
+        // Show error toast
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: payload || 'Failed to create inventory movement',
+        });
         console.error(payload);
       });
   }

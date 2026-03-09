@@ -10,12 +10,10 @@ import {
 } from '@inventory/store';
 import { Dispatcher, Events } from '@ngrx/signals/events';
 import { ButtonModule } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
 
 @Component({
-  selector: 'app-category-list-page',
+  selector: 'app-inventory-list-page',
   imports: [CommonModule, InventoryTable, ButtonModule],
-  providers: [InventoryDialogService, DialogService],
   template: `
     <div class="absolute -top-23 right-0">
       <button
